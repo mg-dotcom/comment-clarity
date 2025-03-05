@@ -3,9 +3,13 @@ import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
+  styleUrl: './app.component.css',
   imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  template: `
+   <main>
+      <router-outlet></router-outlet>
+   </main>
+  `
 })
 export class AppComponent {
   title = 'FE';
