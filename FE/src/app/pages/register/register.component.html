@@ -1,101 +1,139 @@
-<div class="min-h-screen bg-white flex items-center justify-center w-full rounded-b-3xl p-8 border-2 border-gray-200">
-    <div class="flex w-full max-w-7xl mx-auto px-4">
-        <!-- Left Side - Login Form -->
-        <div class="w-full md:w-[70%] flex justify-center" >
-            <div class="w-full max-w-lg   bg-white rounded-xl p-8  flex flex-col justify-center 
-             border-2 border-gray-200 
-            ">
-                <!-- Header Section -->
-                <div 
-                    class="text-start mb-6"
-                >
-                    <h1 class="text-2xl font-semibold text-gray-800">Register</h1>
-                    <p class="text-sm text-gray-500 mt-2">We are excited to have you on board !
-                    </p>
-                </div>
+<main
+  class="min-h-screen bg-white flex items-center justify-center w-full rounded-b-3xl p-8 border-2 border-gray-200"
+>
+  <div class="flex w-full max-w-7xl mx-auto px-4">
+    <!-- Left Side - Login Form -->
+    <div class="w-full md:w-[70%] flex justify-center">
+      <div
+        class="w-full max-w-lg bg-white rounded-xl p-8 flex flex-col justify-center border-2 border-gray-200"
+      >
+        <!-- Header Section -->
+        <div class="text-start mb-6">
+          <h1 class="text-2xl font-semibold text-gray-800">Register</h1>
+          <p class="text-sm text-gray-500 mt-2">
+            We are excited to have you on board!
+          </p>
+        </div>
 
-                <!-- Form Section -->
-                <form class="space-y-6">
-                    <div>
-                        <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Name</label>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center">
-                                <i class="fas fa-user text-gray-400"></i>
-                            </span>
-                            <input 
-                                id="name" type="text" name="name" required 
-                                placeholder="Enter your name"
-                                class="w-full pl-10 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-button-primary-darker"
-                            >
-                        </div>
-                    </div>
-
-                    <div>
-                        <label for="surname" class="block text-sm font-medium text-gray-700 mb-2">Surname</label>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center">
-                                <i class="fas fa-user text-gray-400"></i>
-                            </span>
-                            <input 
-                                id="surname" type="text" name="surname" required 
-                                placeholder="Enter your surname"
-                                class="w-full pl-10 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-button-primary-darker"
-                            >
-                        </div>
-                    </div>
-
-                    <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                        <div class="relative"></div>
-                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center">
-                                <i class="fas fa-envelope text-gray-400"></i>
-                            </span>
-                            <input 
-                                id="email" type="email" name="email" required 
-                                placeholder="Enter your email"
-                                class="w-full pl-10 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-button-primary-darker"
-                            >
-                        </div>
-                    <div>
-                        <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center">
-                                <i class="fas fa-lock text-gray-400"></i>
-                            </span>
-                            <input 
-                                id="password" type="password" name="password" required minlength="6"
-                                placeholder="Enter your password"
-                                class="w-full pl-10 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-button-primary-darker"
-                            >
-                            <button type="button" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-gray-800 focus:outline-none">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="flex space-x-4">
-                        <button 
-                            type="button" 
-                            (click)="onRegister()"
-                            class="w-1/2 bg-button-primary text-white py-2 px-4 rounded-2xl hover:bg-button-primary-darker transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-button-primary-darker"
-                        >
-                            Register
-                        </button>
-                        <button 
-                            type="submit" 
-                            (click)="onLogin()"
-                            class="w-1/2 bg-button-primary text-white py-2 px-4 rounded-2xl hover:bg-button-primary-darker transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-button-primary-darker"
-                        >
-                            Login
-                        </button>
-                    </div>
-                </form>
+        <!-- Form Section -->
+        <form class="space-y-6">
+          <div>
+            <label
+              for="name"
+              class="block text-sm font-medium text-gray-700 mb-2"
+              >Name</label
+            >
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center">
+                <i class="fas fa-user text-gray-400"></i>
+              </span>
+              <input
+                id="name"
+                type="text"
+                name="name"
+                required
+                placeholder="Enter your name"
+                class="w-full pl-10 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-button-primary-darker"
+              />
             </div>
-        </div>
+          </div>
 
-        <!-- Right Side - Image -->
-        <div class="hidden md:w-1/2 md:flex items-center justify-center">
-            <img src="/login-pic/note-login.png" alt="Login Illustration" class="max-h-screen object-cover w-[350px]">
-        </div>
+          <div>
+            <label
+              for="surname"
+              class="block text-sm font-medium text-gray-700 mb-2"
+              >Surname</label
+            >
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center">
+                <i class="fas fa-user text-gray-400"></i>
+              </span>
+              <input
+                id="surname"
+                type="text"
+                name="surname"
+                required
+                placeholder="Enter your surname"
+                class="w-full pl-10 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-button-primary-darker"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label
+              for="email"
+              class="block text-sm font-medium text-gray-700 mb-2"
+              >Email</label
+            >
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center">
+                <i class="fas fa-envelope text-gray-400"></i>
+              </span>
+              <input
+                id="email"
+                type="email"
+                name="email"
+                required
+                placeholder="Enter your email"
+                class="w-full pl-10 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-button-primary-darker"
+              />
+            </div>
+          </div>
+          <div>
+            <label
+              for="password"
+              class="block text-sm font-medium text-gray-700 mb-2"
+              >Password</label
+            >
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center">
+                <i class="fas fa-lock text-gray-400"></i>
+              </span>
+              <input
+                id="password"
+                type="password"
+                name="password"
+                required
+                minlength="6"
+                placeholder="Enter your password"
+                class="w-full pl-10 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-button-primary-darker"
+              />
+              <button
+                type="button"
+                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-gray-800 focus:outline-none"
+              >
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="flex flex-col items-center justify-center">
+            <button
+              type="submit"
+              (click)="onRegister()"
+              class="w-1/2 bg-button-primary text-white py-2 px-4 rounded-2xl hover:bg-button-primary-darker transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-button-primary-darker"
+            >
+              Submit
+            </button>
+
+            <p class="text-sm text-gray-600 mt-4">
+              Already have an account?
+              <a href="/login" class="text-button-primary hover:underline"
+                >Login</a
+              >
+            </p>
+          </div>
+        </form>
+      </div>
     </div>
-</div>
+
+    <!-- Right Side - Image -->
+    <div class="hidden md:w-1/2 md:flex items-center justify-center">
+      <img
+        src="/login-pic/note-login.png"
+        alt="Login Illustration"
+        class="max-h-screen object-cover w-[350px]"
+      />
+    </div>
+  </div>
+</main>
