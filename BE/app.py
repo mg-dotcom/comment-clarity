@@ -2,6 +2,7 @@ from flask import Flask
 from flask_cors import CORS
 from flask_mysqldb import MySQL
 from config import mysql_config, port, debug 
+from api import api_bp
 
 mysql = MySQL()
 
@@ -21,10 +22,18 @@ def create_app():
     
     mysql.init_app(app)
     
-    from api import api_bp
+    # Add timezone setting 
+    @app.before_request
+    def set_timezone():
+        cursor = mysql.connection.cursor()
+        cursor.execute("SET time_zone = '+7:00'")  
+        cursor.close()
+    
+   
     app.register_blueprint(api_bp, url_prefix='/api')
     
     return app
+
 
 if __name__ == '__main__':
     app = create_app()

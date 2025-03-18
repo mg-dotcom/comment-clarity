@@ -7,18 +7,25 @@ from flask import Response
 # สร้าง API สำหรับดึงข้อมูลจากตาราง users
 @api_bp.route('/users', methods=['GET'])
 def get_all_users():
-    result = User.get_all()
+    users, error = User.get_all()
     
-    if isinstance(result, Response):
-        return result
+    if error:
+        status_code = 404 if 'not found' in error.lower() else 500
+        return jsonify({
+            'status': 'error',
+            'message': error
+        }), status_code
     
-    if isinstance(result, tuple) and len(result) == 2:
-        users, error = result
-        if error:
-            return jsonify({"error": error}), 500
-        return jsonify({"users": users}), 200
+    if users is None or len(users) == 0:
+        return jsonify({
+            'status': 'success',
+            'data': []
+        }), 200
     
-    return jsonify({"users": result}), 200
+    return jsonify({
+        'status': 'success',
+        'data': users
+    }), 200
 
 # สร้าง API สำหรับดึงข้อมูลจากตาราง users โดยระบุ user_id
 @api_bp.route('/users/<int:user_id>', methods=['GET'])

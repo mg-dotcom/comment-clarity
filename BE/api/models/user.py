@@ -35,8 +35,8 @@ class User:
         try:
             cursor = mysql.connection.cursor()
             cursor.execute("""
-                INSERT INTO users (firstName, lastName, email, password) 
-                VALUES (%s, %s, %s, %s)
+                INSERT INTO users (firstName, lastName, email, password, createdAt) 
+                VALUES (%s, %s, %s, %s, NOW())
             """, (firstName, lastName, email, hashed_password))
             mysql.connection.commit()
             cursor.close()
@@ -103,10 +103,10 @@ class User:
                     "email": user[3]
                 })
             
-            return user_list, None  # Return users and no error
+            return user_list, None  
         except Exception as e:
             print(f"Error getting all users: {str(e)}")
-            return None, str(e)  # Return no users and the error message
+            return None, str(e)  
         
     @staticmethod
     def get_by_id(user_id):
