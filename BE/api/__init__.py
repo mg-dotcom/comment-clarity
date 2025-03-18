@@ -1,7 +1,9 @@
 from flask import Blueprint
 
-# สร้าง Blueprint สำหรับ API
+# Create Blueprint for API
 api_bp = Blueprint('api', __name__)
 
-# นำเข้า routes
-from api.routes import comments, products
+# Import routes
+from .routes import comment
+from .routes import user
+from .routes import product
