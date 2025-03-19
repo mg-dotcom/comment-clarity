@@ -34,6 +34,8 @@ class User:
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
         try:
             cursor = mysql.connection.cursor()
+            # ตั้งค่าโซนเวลาก่อนที่จะทำการ insert
+            cursor.execute("SET time_zone = '+7:00'")
             cursor.execute("""
                 INSERT INTO users (firstName, lastName, email, password, createdAt) 
                 VALUES (%s, %s, %s, %s, NOW())

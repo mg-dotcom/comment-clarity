@@ -26,16 +26,10 @@ def create_app():
     jwt = JWTManager(app)
     mysql.init_app(app)
 
-    with app.app_context():
-        cursor = mysql.connection.cursor()
-        cursor.execute("SET time_zone = '+7:00'")
-        cursor.close()
-
     @app.errorhandler(Exception)
     def handle_exception(e):
         app.logger.error(f"Unhandled Exception: {e}")
         return jsonify({'status': 'error', 'message': 'Internal Server Error'}), 500
-
 
     app.register_blueprint(api_bp, url_prefix='/api')
 

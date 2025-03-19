@@ -3,6 +3,7 @@ from api import api_bp
 from flask import request
 from api.models.user import User
 from flask import Response
+from flask_jwt_extended import create_access_token
 
 # สร้าง API สำหรับดึงข้อมูลจากตาราง users
 @api_bp.route('/users', methods=['GET'])
@@ -83,9 +84,6 @@ def register_user():
     }), 500
 
 # สร้าง API สำหรับ login ผู้ใช้งาน
-from flask_jwt_extended import create_access_token
-
-# สร้าง API สำหรับ login ผู้ใช้งาน
 @api_bp.route('/users/login', methods=['POST'])
 def login_user():
     data = request.get_json()
@@ -105,13 +103,14 @@ def login_user():
         
         return jsonify({
             'status': 'success',
-            'message': 'User logged in successfully',
-            'access_token': access_token,
-            'user': {
-                'userId': user.userId,
-                'firstName': user.firstName,
-                'lastName': user.lastName,
-                'email': user.email
+            'data': {
+                'access_token': access_token,
+                'user': {
+                    'userId': getattr(user, 'userId', None),
+                    'firstName': getattr(user, 'firstName', None),
+                    'lastName': getattr(user, 'lastName', None),
+                    'email': getattr(user, 'email', None)
+                }
             }
         }), 200
     
