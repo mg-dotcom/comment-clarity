@@ -1,10 +1,15 @@
+# mySQL config
 mysql_config = {
-    'host': 'localhost',  
-    'port': 3306,         
-    'user': 'root',
-    'password': 'momor123',
-    'database': 'community_clarity_schema'
+    'HOST': 'localhost',  
+    'PORT': 3306,         
+    'USER': 'root',
+    'PASSWORD': 'momor123',
+    'DATABASE': 'community_clarity_schema'
 }
 
-port = 8080  
-debug = True  
+# Flask
+PORT = 8080  
+DEBUG = True  
+
+# JWT
+JWT_SECRET_KEY = "a99e1f5e7245af8c32863db074c34b5598c8875598dd9eb67fb925a3d61c8518"

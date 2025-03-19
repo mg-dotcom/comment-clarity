@@ -4,13 +4,13 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule,],
+  imports: [CommonModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrl: './login.component.css',
 })
+
 export class LoginComponent {
   constructor(private router: Router) {}
-
   onLogin() {
     this.router.navigate(['/home']);
   }
@@ -18,5 +18,4 @@ export class LoginComponent {
   onRegister() {
     this.router.navigate(['/register']);
   }
-
 }

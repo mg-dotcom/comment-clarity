@@ -83,6 +83,9 @@ def register_user():
     }), 500
 
 # สร้าง API สำหรับ login ผู้ใช้งาน
+from flask_jwt_extended import create_access_token
+
+# สร้าง API สำหรับ login ผู้ใช้งาน
 @api_bp.route('/users/login', methods=['POST'])
 def login_user():
     data = request.get_json()
@@ -98,13 +101,21 @@ def login_user():
     user = User.login(email, password)
     
     if user:
+        access_token = create_access_token(identity=user.userId)
+        
         return jsonify({
             'status': 'success',
-            'data': user.__dict__
+            'message': 'User logged in successfully',
+            'access_token': access_token,
+            'user': {
+                'userId': user.userId,
+                'firstName': user.firstName,
+                'lastName': user.lastName,
+                'email': user.email
+            }
         }), 200
     
     return jsonify({
         'status': 'error',
         'message': 'Invalid email or password'
-    }), 400
-
+    }), 401
