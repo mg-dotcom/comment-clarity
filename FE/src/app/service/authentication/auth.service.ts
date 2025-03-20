@@ -1,3 +1,4 @@
+//  ์NOTE: Add
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
@@ -26,6 +27,7 @@ export class AuthService {
       }
 
       const result = await response.json();
+
       if (result.status === 'success' && result.data?.access_token) {
         localStorage.setItem(this.authSecretKey, result.data.access_token);
         localStorage.setItem('user', JSON.stringify(result.data.user));
@@ -36,6 +38,37 @@ export class AuthService {
     } catch (error) {
       console.error('Login failed:', error);
       return 'Network error';
+    }
+  }
+
+  async register(
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string
+  ): Promise<string> {
+    try {
+      const response = await fetch('http://localhost:8080/api/users/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ firstName, lastName, email, password }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        return errorData.message || 'Register failed';
+      }
+
+      const result = await response.json();
+
+      if (response.ok && result.status === 'success') {
+        return result.status;
+      } else {
+        throw new Error(result.message || 'Registration failed');
+      }
+    } catch (error: any) {
+      console.error('Registration failed:', error);
+      return error.message || 'Network error';
     }
   }
 

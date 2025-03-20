@@ -35,6 +35,10 @@ export class LoginComponent {
     this.showPassword = !this.showPassword;
   }
 
+  onRegister(): void {
+    this.router.navigate(['/register']);
+  }
+
   async onSubmit(): Promise<void> {
     if (this.loginForm.invalid) {
       this.error = 'Please fill in all required fields correctly.';
@@ -45,8 +49,8 @@ export class LoginComponent {
     const { email, password } = this.loginForm.value;
 
     try {
-      const response = await this.authService.login(email, password);
-      if (response === 'success') {
+      const status = await this.authService.login(email, password);
+      if (status === 'success') {
         const returnUrl =
           this.route.snapshot.queryParams['returnUrl'] || '/home';
         this.router.navigateByUrl(returnUrl);
