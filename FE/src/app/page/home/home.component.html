@@ -1,130 +1,78 @@
-<main class="bg-primary min-h-screen font-sans">
-  <div class="flex">
-    <!-- Left sidebar with buttons -->
-    <div
-      class="fixed left-0 top-0 h-screen w-20 flex flex-col items-center py-6 bg-primary shadow-lg z-10"
-    >
-      <div class="flex flex-col items-center gap-6">
-        <button
-          class="text-2xl text-gray-700 hover:text-black transition-colors p-2 rounded-lg hover:bg-gray-100/20"
-        >
-          <i class="fas fa-bars"></i>
-        </button>
+<div class="w-full">
+  <!-- Content -->
+  <main class="p-6">
+    <h1 class="text-3xl font-bold text-gray-800 mb-8">TWENTYWENDY</h1>
 
-        <button
-          class="w-14 h-14 rounded-xl bg-add-button flex justify-center items-center text-2xl text-gray-800 shadow-md hover:bg-add-button-hover transition-all hover:scale-105"
-        >
-          <i class="fas fa-plus"></i>
-        </button>
+    <section class="mb-10">
+      <div class="flex items-center justify-between my-5">
+        <h2 class="text-2xl font-bold text-gray-800">HISTORY</h2>
+        <div class="mb-4">
+          <button
+            class="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+            routerLink="/home"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              />
+            </svg>
+            View All
+          </button>
+        </div>
       </div>
 
-      <button
-        class="text-2xl text-gray-700 hover:text-black transition-colors mt-auto p-2 rounded-lg hover:bg-gray-100/20"
-        (click)="onLogout()"
-        aria-label="Logout"
-      >
-        <i class="fas fa-sign-out-alt"></i>
-      </button>
-    </div>
-
-    <!-- Main content -->
-    <div class="w-full bg-white min-h-screen pl-24 shadow-inner">
-      <header
-        class="flex justify-between items-center p-5 border-b border-gray-100"
-      >
-        <div class="profile-user flex items-center gap-x-4">
+      <!-- Card container with different approach to width -->
+      <div class="flex flex-wrap gap-7 px-4 py-6">
+        <!-- All Comments Card  -->
+        <div
+          class="bg-card-bg rounded-lg overflow-hidden shadow-sm transition-all duration-300 hover:shadow-md hover:scale-105 cursor-pointer w-32 sm:w-36"
+          routerLink="/home/comment"
+        >
           <div
-            class="w-10 h-10 rounded-full bg-profile-bg flex justify-center items-center text-gray-800 shadow-sm"
+            class="w-full h-32 bg-white flex justify-center items-center p-2"
           >
-            <i class="fas fa-user"></i>
+            <img
+              src="/home-pic/shampoo.jpg"
+              alt="Shampoo"
+              class="max-w-full max-h-full object-contain"
+              loading="lazy"
+            />
           </div>
-          <div class="font-bold text-gray-800">
-            {{ currentUser.firstName }} {{ currentUser.lastName }}
+          <div class="p-2">
+            <div class="font-bold text-gray-800 text-sm">All Comments</div>
+            <div class="text-gray-600 text-xs mt-1">2024-9-6</div>
           </div>
         </div>
 
-        <div class="flex items-center gap-5">
-          <button
-            class="text-2xl text-gray-700 hover:text-gray-950 transition-colors"
-            aria-label="Notifications"
+        <!-- Result Card  -->
+        <div
+          class="bg-card-bg rounded-lg overflow-hidden shadow-sm transition-all duration-300 hover:shadow-md hover:scale-105 cursor-pointer w-32 sm:w-36"
+        >
+          <div
+            class="w-full h-32 bg-white flex justify-center items-center p-2"
           >
-            <i class="fas fa-bell"></i>
-          </button>
-          <button
-            class="text-2xl text-gray-700 hover:text-gray-950 transition-colors"
-            aria-label="Settings"
-          >
-            <i class="fas fa-cog"></i>
-          </button>
+            <img
+              src="/home-pic/pie-chart.png"
+              alt="Result Chart"
+              class="max-w-full max-h-full object-contain"
+              loading="lazy"
+            />
+          </div>
+          <div class="p-2">
+            <div class="font-bold text-gray-800 text-sm truncate">Result</div>
+            <div class="text-gray-600 text-xs mt-1">2024-9-6</div>
+          </div>
         </div>
-      </header>
-
-      <!-- Content -->
-      <main class="p-6">
-        <h1 class="text-3xl font-bold text-gray-800 mb-8">TWENTYWENDY</h1>
-
-        <section class="mb-10">
-          <div class="flex items-center justify-between my-5">
-            <h2 class="text-2xl font-bold text-gray-800">HISTORY</h2>
-            <a
-              href="#"
-              class="text-gray-800 flex items-center gap-2 hover:underline group"
-            >
-              View all
-              <i
-                class="fas fa-arrow-right transition-transform group-hover:translate-x-1"
-              ></i>
-            </a>
-          </div>
-
-          <!-- Card container with different approach to width -->
-          <div class="flex flex-wrap gap-7 px-4 py-6">
-            <!-- Shampoo Card with fixed width -->
-            <div
-              class="bg-card-bg rounded-lg overflow-hidden shadow-sm transition-all duration-300 hover:shadow-md hover:scale-105 cursor-pointer w-32 sm:w-36"
-            >
-              <div
-                class="w-full h-32 bg-white flex justify-center items-center p-2"
-              >
-                <img
-                  src="/home-pic/shampoo.jpg"
-                  alt="Shampoo"
-                  class="max-w-full max-h-full object-contain"
-                  loading="lazy"
-                />
-              </div>
-              <div class="p-2">
-                <div class="font-bold text-gray-800 text-sm truncate">
-                  Shampoo Comment
-                </div>
-                <div class="text-gray-600 text-xs mt-1">2024-9-6</div>
-              </div>
-            </div>
-
-            <!-- Result Card with fixed width -->
-            <div
-              class="bg-card-bg rounded-lg overflow-hidden shadow-sm transition-all duration-300 hover:shadow-md hover:scale-105 cursor-pointer w-32 sm:w-36"
-            >
-              <div
-                class="w-full h-32 bg-white flex justify-center items-center p-2"
-              >
-                <img
-                  src="/home-pic/pie-chart.png"
-                  alt="Result Chart"
-                  class="max-w-full max-h-full object-contain"
-                  loading="lazy"
-                />
-              </div>
-              <div class="p-2">
-                <div class="font-bold text-gray-800 text-sm truncate">
-                  Result
-                </div>
-                <div class="text-gray-600 text-xs mt-1">2024-9-6</div>
-              </div>
-            </div>
-          </div>
-        </section>
-      </main>
-    </div>
-  </div>
-</main>
+      </div>
+    </section>
+  </main>
+</div>

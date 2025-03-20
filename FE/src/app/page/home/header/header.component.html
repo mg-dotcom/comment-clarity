@@ -1,0 +1,27 @@
+<header class="flex justify-between items-center p-5 border-b border-gray-100">
+  <div class="profile-user flex items-center gap-x-4">
+    <div
+      class="w-10 h-10 rounded-full bg-profile-bg flex justify-center items-center text-gray-800 shadow-sm"
+    >
+      <i class="fas fa-user"></i>
+    </div>
+    <div class="font-bold text-gray-800">
+      {{ currentUser.firstName }} {{ currentUser.lastName }}
+    </div>
+  </div>
+
+  <div class="flex items-center gap-5">
+    <button
+      class="text-2xl text-gray-700 hover:text-gray-950 transition-colors"
+      aria-label="Notifications"
+    >
+      <i class="fas fa-bell"></i>
+    </button>
+    <button
+      class="text-2xl text-gray-700 hover:text-gray-950 transition-colors"
+      aria-label="Settings"
+    >
+      <i class="fas fa-cog"></i>
+    </button>
+  </div>
+</header>
