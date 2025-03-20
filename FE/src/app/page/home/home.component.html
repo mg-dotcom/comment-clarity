@@ -1,112 +1,130 @@
-<body class="bg-primary min-h-screen">
+<main class="bg-primary min-h-screen font-sans">
   <div class="flex">
     <!-- Left sidebar with buttons -->
     <div
-      class="absolute left-2 top-0 h-screen w-20 flex flex-col items-center py-6 bg-primary"
+      class="fixed left-0 top-0 h-screen w-20 flex flex-col items-center py-6 bg-primary shadow-lg z-10"
     >
-      <div class="upper-button flex flex-col items-center">
+      <div class="flex flex-col items-center gap-6">
         <button
-          class="text-2xl text-gray-700 hover:text-black transition-colors mb-6"
+          class="text-2xl text-gray-700 hover:text-black transition-colors p-2 rounded-lg hover:bg-gray-100/20"
         >
           <i class="fas fa-bars"></i>
         </button>
 
-        <!-- Add Button -->
         <button
-          class="w-14 h-14 rounded-xl bg-add-button flex justify-center items-center text-2xl text-gray-800 shadow-md mb-6 hover:bg-add-button-hover transition-colors"
+          class="w-14 h-14 rounded-xl bg-add-button flex justify-center items-center text-2xl text-gray-800 shadow-md hover:bg-add-button-hover transition-all hover:scale-105"
         >
           <i class="fas fa-plus"></i>
         </button>
       </div>
 
-      <!-- Logout Button  -->
       <button
-        class="text-2xl text-gray-700 hover:text-black transition-colors mt-auto"
+        class="text-2xl text-gray-700 hover:text-black transition-colors mt-auto p-2 rounded-lg hover:bg-gray-100/20"
         (click)="onLogout()"
+        aria-label="Logout"
       >
         <i class="fas fa-sign-out-alt"></i>
       </button>
     </div>
 
     <!-- Main content -->
-    <div class="w-full bg-white h-lvh pl-24">
-      <!-- Header -->
-      <div class="flex justify-between items-center p-5">
-        <div
-          class="w-10 h-10 rounded-full bg-profile-bg flex justify-center items-center text-gray-800"
-        >
-          <i class="fas fa-user"></i>
+    <div class="w-full bg-white min-h-screen pl-24 shadow-inner">
+      <header
+        class="flex justify-between items-center p-5 border-b border-gray-100"
+      >
+        <div class="profile-user flex items-center gap-x-4">
+          <div
+            class="w-10 h-10 rounded-full bg-profile-bg flex justify-center items-center text-gray-800 shadow-sm"
+          >
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="font-bold text-gray-800">
+            {{ currentUser.firstName }} {{ currentUser.lastName }}
+          </div>
         </div>
-        <div class="flex items-center">
+
+        <div class="flex items-center gap-5">
           <button
-            class="text-2xl text-gray-700 ml-5 hover:text-gray-950 transition-colors"
+            class="text-2xl text-gray-700 hover:text-gray-950 transition-colors"
+            aria-label="Notifications"
           >
             <i class="fas fa-bell"></i>
           </button>
           <button
-            class="text-2xl text-gray-700 ml-5 hover:text-gray-950 transition-colors"
+            class="text-2xl text-gray-700 hover:text-gray-950 transition-colors"
+            aria-label="Settings"
           >
             <i class="fas fa-cog"></i>
           </button>
         </div>
-      </div>
+      </header>
 
       <!-- Content -->
-      <div class="p-5">
-        <!-- Title -->
-        <h1 class="text-3xl font-bold text-gray-800 my-8">TWENTYWENDY</h1>
+      <main class="p-6">
+        <h1 class="text-3xl font-bold text-gray-800 mb-8">TWENTYWENDY</h1>
 
-        <!-- History Section -->
-        <div class="mb-10">
-          <div class="flex items-center mb-5">
+        <section class="mb-10">
+          <div class="flex items-center justify-between my-5">
             <h2 class="text-2xl font-bold text-gray-800">HISTORY</h2>
-            <a href="#" class="text-gray-800 ml-3">
-              <i class="fas fa-arrow-right"></i>
+            <a
+              href="#"
+              class="text-gray-800 flex items-center gap-2 hover:underline group"
+            >
+              View all
+              <i
+                class="fas fa-arrow-right transition-transform group-hover:translate-x-1"
+              ></i>
             </a>
           </div>
 
-          <!-- Cards -->
-          <div class="flex gap-8">
-            <!-- Shampoo Card -->
+          <!-- Card container with different approach to width -->
+          <div class="flex flex-wrap gap-7 px-4 py-6">
+            <!-- Shampoo Card with fixed width -->
             <div
-              class="min-w-[180px] bg-card-bg rounded-2xl overflow-hidden shadow transition-all duration-500 ease-in-out transform hover:scale-110 cursor-pointer hover:opacity-90"
+              class="bg-card-bg rounded-lg overflow-hidden shadow-sm transition-all duration-300 hover:shadow-md hover:scale-105 cursor-pointer w-32 sm:w-36"
             >
               <div
-                class="w-full h-[150px] bg-white flex justify-center items-center p-3"
+                class="w-full h-32 bg-white flex justify-center items-center p-2"
               >
                 <img
                   src="/home-pic/shampoo.jpg"
                   alt="Shampoo"
                   class="max-w-full max-h-full object-contain"
+                  loading="lazy"
                 />
               </div>
-              <div class="p-4">
-                <div class="font-bold text-gray-800">Shampoo Comment</div>
-                <div class="text-gray-600 text-sm">2024-9-6</div>
+              <div class="p-2">
+                <div class="font-bold text-gray-800 text-sm truncate">
+                  Shampoo Comment
+                </div>
+                <div class="text-gray-600 text-xs mt-1">2024-9-6</div>
               </div>
             </div>
 
-            <!-- Result Card -->
+            <!-- Result Card with fixed width -->
             <div
-              class="min-w-[180px] bg-card-bg rounded-2xl overflow-hidden shadow transition-all duration-500 ease-in-out transform hover:scale-110 cursor-pointer hover:opacity-90"
+              class="bg-card-bg rounded-lg overflow-hidden shadow-sm transition-all duration-300 hover:shadow-md hover:scale-105 cursor-pointer w-32 sm:w-36"
             >
               <div
-                class="w-full h-[150px] bg-white flex justify-center items-center p-3"
+                class="w-full h-32 bg-white flex justify-center items-center p-2"
               >
                 <img
                   src="/home-pic/pie-chart.png"
                   alt="Result Chart"
                   class="max-w-full max-h-full object-contain"
+                  loading="lazy"
                 />
               </div>
-              <div class="p-4">
-                <div class="font-bold text-gray-800">Result</div>
-                <div class="text-gray-600 text-sm">2024-9-6</div>
+              <div class="p-2">
+                <div class="font-bold text-gray-800 text-sm truncate">
+                  Result
+                </div>
+                <div class="text-gray-600 text-xs mt-1">2024-9-6</div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </section>
+      </main>
     </div>
   </div>
-</body>
+</main>

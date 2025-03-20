@@ -17,6 +17,14 @@ export class HomeComponent implements OnInit {
   comments: Comment[] = [];
   isLoading = false;
   error: string | null = null;
+  currentUser = {
+    firstName:
+      (this.authService.getUser() as { firstName?: string; lastName?: string })
+        ?.firstName || '',
+    lastName:
+      (this.authService.getUser() as { firstName?: string; lastName?: string })
+        ?.lastName || '',
+  };
 
   constructor(private commentService: CommentService) {}
 
@@ -28,18 +36,16 @@ export class HomeComponent implements OnInit {
     this.authService.logout();
   }
 
-  loadComments(): void {
+  async loadComments(): Promise<void> {
     this.isLoading = true;
 
-    this.commentService.getAllComments().subscribe({
-      next: (response) => {
-        this.comments = response.data;
-        this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('Error fetching comments:', err);
-        this.isLoading = false;
-      },
-    });
+    try {
+      const response = await this.commentService.getAllComments();
+      this.comments = response.data;
+    } catch (err) {
+      console.error('Error fetching comments:', err);
+    } finally {
+      this.isLoading = false;
+    }
   }
 }

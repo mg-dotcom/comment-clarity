@@ -10,9 +10,13 @@ import { environment } from '../../../environment/environment';
 export class CommentService {
   private apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor() {}
 
-  getAllComments(): Observable<CommentsResponse> {
-    return this.http.get<CommentsResponse>(`${this.apiUrl}/comments`);
+  async getAllComments(): Promise<CommentsResponse> {
+    const response = await fetch(`${this.apiUrl}/comments`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch comments');
+    }
+    return response.json();
   }
 }
