@@ -4,17 +4,27 @@
     <div
       class="absolute left-2 top-0 h-screen w-20 flex flex-col items-center py-6 bg-primary"
     >
-      <button
-        class="text-2xl text-gray-700 hover:text-black transition-colors mb-6"
-      >
-        <i class="fas fa-bars"></i>
-      </button>
+      <div class="upper-button flex flex-col items-center">
+        <button
+          class="text-2xl text-gray-700 hover:text-black transition-colors mb-6"
+        >
+          <i class="fas fa-bars"></i>
+        </button>
 
-      <!-- Add Button -->
+        <!-- Add Button -->
+        <button
+          class="w-14 h-14 rounded-xl bg-add-button flex justify-center items-center text-2xl text-gray-800 shadow-md mb-6 hover:bg-add-button-hover transition-colors"
+        >
+          <i class="fas fa-plus"></i>
+        </button>
+      </div>
+
+      <!-- Logout Button  -->
       <button
-        class="w-14 h-14 rounded-xl bg-add-button flex justify-center items-center text-2xl text-gray-800 shadow-md mb-6 hover:bg-add-button-hover transition-colors"
+        class="text-2xl text-gray-700 hover:text-black transition-colors mt-auto"
+        (click)="onLogout()"
       >
-        <i class="fas fa-plus"></i>
+        <i class="fas fa-sign-out-alt"></i>
       </button>
     </div>
 

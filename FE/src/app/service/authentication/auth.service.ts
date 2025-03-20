@@ -1,8 +1,14 @@
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+
+@Injectable({
+  providedIn: 'root',
+})
 export class AuthService {
   private authSecretKey = 'access_token';
   public isAuthenticated = false;
 
-  constructor() {
+  constructor(private router: Router) {
     this.checkAuthStatus();
   }
 
@@ -34,9 +40,13 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem(this.authSecretKey);
-    localStorage.removeItem('user');
-    this.isAuthenticated = false;
+    if (confirm('Are you sure you want to log out?')) {
+      localStorage.removeItem(this.authSecretKey);
+      localStorage.removeItem('user');
+      this.isAuthenticated = false;
+
+      this.router.navigate(['/login']);
+    }
   }
 
   private async checkAuthStatus(): Promise<void> {
