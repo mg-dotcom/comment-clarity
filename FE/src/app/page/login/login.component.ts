@@ -1,57 +1,61 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
+import { AuthService } from '../../service/authentication/auth.service';
 import { CommonModule } from '@angular/common';
-import { FormGroup } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import { FormBuilder } from '@angular/forms';
-import { Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { AuthService } from 'src/app/service/auth.service';
+import { inject } from '@angular/core';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css',
+  imports: [CommonModule, ReactiveFormsModule],
+  providers: [AuthService],
 })
 export class LoginComponent {
+  private authService = inject(AuthService);
   loginForm: FormGroup;
-  loading = false;
-  error = '';
+  error: string = '';
+  loading: boolean = false;
+  showPassword: boolean = false;
 
   constructor(
-    private formBuilder: FormBuilder,
-    private route: ActivatedRoute,
+    private fb: FormBuilder,
     private router: Router,
-    private authService: AuthService
+    private route: ActivatedRoute
   ) {
-    this.loginForm = this.formBuilder.group({
+    this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required],
+      password: ['', [Validators.required, Validators.minLength(6)]],
     });
   }
 
-  onRegister() {
-    this.router.navigate(['/register']);
+  togglePassword(): void {
+    this.showPassword = !this.showPassword;
   }
 
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
     if (this.loginForm.invalid) {
+      this.error = 'Please fill in all required fields correctly.';
       return;
     }
 
     this.loading = true;
     const { email, password } = this.loginForm.value;
 
-    this.authService.login(email, password).subscribe({
-      next: () => {
-        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    try {
+      const response = await this.authService.login(email, password);
+      if (response === 'success') {
+        const returnUrl =
+          this.route.snapshot.queryParams['returnUrl'] || '/home';
         this.router.navigateByUrl(returnUrl);
-      },
-      error: () => {
+      } else {
         this.error = 'Invalid email or password';
-        this.loading = false;
-      },
-    });
+      }
+    } catch (err: any) {
+      this.error = err?.message || 'An error occurred during login';
+    } finally {
+      this.loading = false;
+    }
   }
 }
