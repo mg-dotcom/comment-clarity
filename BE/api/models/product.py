@@ -1,4 +1,5 @@
 from app import mysql
+from flask import jsonify
 
 class Product:
     @staticmethod
@@ -6,7 +7,7 @@ class Product:
         try:
             cursor = mysql.connection.cursor()
             cursor.execute("""
-                SELECT productId, productName, productImagePath
+                SELECT productId, productName
                 FROM products
             """)
             
@@ -15,7 +16,6 @@ class Product:
                 product = {
                     'productId': row[0],
                     'productName': row[1],
-                    'productImagePath': row[2]
                 }
                 products.append(product)
             
@@ -30,7 +30,7 @@ class Product:
         try:
             cursor = mysql.connection.cursor()
             cursor.execute("""
-                SELECT productId, productName, productImagePath
+                SELECT productId, productName
                 FROM products
                 WHERE productId = %s
             """, (product_id,))
@@ -42,11 +42,13 @@ class Product:
                 product = {
                     'productId': row[0],
                     'productName': row[1],
-                    'productImagePath': row[2]
                 }
                 return product, None
             else:
-                return None, f'Product with ID {product_id} not found'
-                
+                return None, 'Product not found'
+            
         except Exception as e:
             return None, str(e)
+
+
+

@@ -1,10 +1,9 @@
 import { Routes } from '@angular/router';
 
 export const routes: Routes = [
-  // FIXME: Fix ' ' to 'home' after implementing the security feature
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'product',
     pathMatch: 'full',
   },
   {
@@ -20,27 +19,26 @@ export const routes: Routes = [
       ),
   },
   {
-    path: '',
+    path: 'product',
     loadComponent: () =>
       import('./page/layout/base-layout/base-layout.component').then(
         (m) => m.BaseLayoutComponent
       ),
     children: [
       {
-        path: 'home',
+        path: ':productId',
         loadComponent: () =>
-          import('./page/home/home.component').then((m) => m.HomeComponent),
+          import('./page/product/product.component').then(
+            (m) => m.ProductComponent
+          ),
       },
       {
-        path: 'home/comment',
+        path: ':productId/comments',
         loadComponent: () =>
-          import('./page/home/all-comment/all-comment.component').then(
+          import('./page/product/product-comment/all-comment.component').then(
             (m) => m.AllCommentComponent
           ),
       },
     ],
   },
-
-  // { path: '', redirectTo: '/home', pathMatch: 'full' },
-  // { path: '**', redirectTo: '/home' }, // Handle unknown routes
 ];

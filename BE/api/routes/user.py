@@ -99,7 +99,7 @@ def login_user():
     user = User.login(email, password)
     
     if user:
-        access_token = create_access_token(identity=user.userId)
+        access_token = create_access_token(identity=str(user.userId))
         
         return jsonify({
             'status': 'success',

@@ -82,7 +82,13 @@ export class AuthService {
     }
   }
 
-  private async checkAuthStatus(): Promise<void> {
+  clearAuthData(): void {
+    localStorage.removeItem(this.authSecretKey);
+    localStorage.removeItem('user');
+    this.isAuthenticated = false;
+  }
+
+  async checkAuthStatus(): Promise<void> {
     const token = localStorage.getItem(this.authSecretKey);
     this.isAuthenticated = !!token;
     if (token) {
@@ -91,10 +97,12 @@ export class AuthService {
         const expiry = payload.exp;
         const now = Math.floor(Date.now() / 1000);
         if (expiry < now) {
-          this.logout();
+          this.clearAuthData();
+          this.router.navigate(['/login']);
         }
       } catch (e) {
-        this.logout();
+        this.clearAuthData();
+        this.router.navigate(['/login']);
       }
     }
   }
