@@ -1,12 +1,15 @@
-<main class="bg-primary min-h-screen font-sans">
-  <!-- Sidebar -->
-  <app-sidebar></app-sidebar>
+<main class="bg-primary min-h-screen font-sans flex">
+  <!-- Sidebar placeholder - actual sidebar is fixed positioned -->
+  <div class="w-16 sm:w-18 md:w-20 lg:w-56 flex-shrink-0">
+    <app-sidebar></app-sidebar>
+  </div>
 
-  <div class="w-full bg-white min-h-screen pl-24 shadow-inner">
+  <!-- Main content area -->
+  <div class="flex-grow bg-white min-h-screen shadow-inner">
     <!-- Header -->
     <app-header></app-header>
 
-    <!-- ตำแหน่งที่เปลี่ยนหน้า -->
+    <!-- ตำแหน่งที่เปลี่ยนหน้า (Position where page changes) -->
     <router-outlet></router-outlet>
   </div>
 </main>

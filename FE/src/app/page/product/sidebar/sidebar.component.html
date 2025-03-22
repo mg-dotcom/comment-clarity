@@ -1,25 +1,64 @@
 <div
-  class="fixed left-0 top-0 h-screen w-20 flex flex-col items-center py-6 bg-primary shadow-lg z-10"
+  class="fixed left-0 top-0 h-screen flex flex-col items-center bg-primary shadow-md z-10 justify-between transition-all duration-300 overflow-hidden"
+  [ngClass]="{
+    'w-56': isSidebarOpen,
+    'w-16 sm:w-18 md:w-20': !isSidebarOpen,
+    'lg:w-56': true
+  }"
 >
-  <div class="flex flex-col items-center gap-6">
+  <!-- Top section -->
+  <div class="flex flex-col items-center gap-5 w-full pt-6">
     <button
-      class="text-2xl text-gray-700 hover:text-black transition-colors p-2 rounded-lg hover:bg-gray-100/20"
+      class="text-lg sm:text-xl text-gray-700 hover:text-black transition-colors p-2 rounded-lg hover:bg-gray-100/20 w-full flex items-center justify-center lg:justify-start px-3"
+      (click)="onToggleSidebar()"
+      aria-label="Toggle Sidebar"
+      [ngClass]="{
+        'bg-gray-100/20': isSidebarOpen
+      }"
     >
       <i class="fas fa-bars"></i>
+      <span
+        class="ml-3 text-gray-700 text-sm font-medium whitespace-nowrap"
+        [ngClass]="{ 'hidden lg:inline': !isSidebarOpen }"
+        >Menu</span
+      >
     </button>
 
-    <button
-      class="w-14 h-14 rounded-xl bg-add-button flex justify-center items-center text-2xl text-gray-800 shadow-md hover:bg-add-button-hover transition-all hover:scale-105"
+    <a
+      href="#"
+      class="flex items-center justify-center lg:justify-start w-full px-3 py-2.5 hover:bg-gray-100/20 rounded-lg transition-colors"
+    >
+      <i class="fas fa-home text-lg sm:text-xl text-gray-700"></i>
+      <span
+        class="ml-3 text-gray-700 text-sm font-medium whitespace-nowrap"
+        [ngClass]="{ 'hidden lg:inline': !isSidebarOpen }"
+        >Home</span
+      >
+    </a>
+
+    <a
+      href="#"
+      class="flex items-center justify-center lg:justify-start w-full px-3 py-2.5 rounded-lg bg-add-button text-lg sm:text-xl text-gray-800 shadow-sm hover:bg-add-button-hover transition-all hover:shadow-md"
     >
       <i class="fas fa-plus"></i>
-    </button>
+      <span
+        class="ml-3 text-gray-800 text-sm font-medium whitespace-nowrap"
+        [ngClass]="{ 'hidden lg:inline': !isSidebarOpen }"
+        >Add Product</span
+      >
+    </a>
   </div>
 
   <button
-    class="text-2xl text-gray-700 hover:text-black transition-colors mt-auto p-2 rounded-lg hover:bg-gray-100/20"
+    class="text-lg sm:text-xl text-gray-700 hover:text-black transition-colors w-full mb-6 p-2 rounded-lg hover:bg-gray-100/20 flex items-center justify-center lg:justify-start px-3"
     (click)="onLogout()"
     aria-label="Logout"
   >
     <i class="fas fa-sign-out-alt"></i>
+    <span
+      class="ml-3 text-sm font-medium whitespace-nowrap"
+      [ngClass]="{ 'hidden lg:inline': !isSidebarOpen }"
+      >Logout</span
+    >
   </button>
 </div>

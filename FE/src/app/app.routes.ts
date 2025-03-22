@@ -26,7 +26,7 @@ export const routes: Routes = [
       ),
     children: [
       {
-        path: '', 
+        path: '',
         loadComponent: () =>
           import('./page/product/product-list/product-list.component').then(
             (m) => m.ProductListComponent
@@ -35,7 +35,7 @@ export const routes: Routes = [
       {
         path: ':productId',
         loadComponent: () =>
-          import('./page/product/product.component').then(
+          import('./page/product/product-main/product.component').then(
             (m) => m.ProductComponent
           ),
       },

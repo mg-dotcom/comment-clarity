@@ -1,19 +1,25 @@
 <div class="w-full">
   <!-- Content -->
-  <main class="p-6">
-    <h1 class="text-3xl font-bold text-gray-800 mb-8">TWENTYWENDY</h1>
+  <main class="p-4 sm:p-6">
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 sm:mb-8">
+      TWENTYWENDY
+    </h1>
 
-    <section class="mb-10">
-      <div class="flex items-center justify-between my-5">
-        <h2 class="text-2xl font-bold text-gray-800">HISTORY</h2>
-        <div class="mb-4">
+    <section class="mb-6 sm:mb-10">
+      <div
+        class="flex flex-col sm:flex-row sm:items-center sm:justify-between my-3 sm:my-5"
+      >
+        <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-2 sm:mb-0">
+          HISTORY
+        </h2>
+        <div>
           <button
             class="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
             routerLink="/home"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5"
+              class="h-4 w-4 sm:h-5 sm:w-5"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -30,15 +36,17 @@
         </div>
       </div>
 
-      <!-- Card container with different approach to width -->
-      <div class="flex flex-wrap gap-7 px-4 py-6">
+      <!-- Card container with responsive grid -->
+      <div
+        class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-5 md:gap-7 px-2 sm:px-4 py-4 sm:py-6"
+      >
         <!-- All Comments Card  -->
         <div
-          class="bg-card-bg rounded-lg overflow-hidden shadow-sm transition-all duration-300 hover:shadow-md hover:scale-105 cursor-pointer w-32 sm:w-36"
+          class="bg-card-bg rounded-lg overflow-hidden shadow-sm transition-all duration-300 hover:shadow-md hover:scale-105 cursor-pointer"
           (click)="navigateToComments()"
         >
           <div
-            class="w-full h-32 bg-white flex justify-center items-center p-2"
+            class="w-full h-24 sm:h-32 bg-white flex justify-center items-center p-2"
           >
             <img
               src="/home-pic/comment.png"
@@ -48,17 +56,19 @@
             />
           </div>
           <div class="p-2">
-            <div class="font-bold text-gray-800 text-sm">All Comments</div>
+            <div class="font-bold text-gray-800 text-xs sm:text-sm">
+              All Comments
+            </div>
             <div class="text-gray-600 text-xs mt-1">2024-9-6</div>
           </div>
         </div>
 
         <!-- Result Card  -->
         <div
-          class="bg-card-bg rounded-lg overflow-hidden shadow-sm transition-all duration-300 hover:shadow-md hover:scale-105 cursor-pointer w-32 sm:w-36"
+          class="bg-card-bg rounded-lg overflow-hidden shadow-sm transition-all duration-300 hover:shadow-md hover:scale-105 cursor-pointer"
         >
           <div
-            class="w-full h-32 bg-white flex justify-center items-center p-2"
+            class="w-full h-24 sm:h-32 bg-white flex justify-center items-center p-2"
           >
             <img
               src="/home-pic/pie-chart.png"
@@ -68,7 +78,9 @@
             />
           </div>
           <div class="p-2">
-            <div class="font-bold text-gray-800 text-sm truncate">Result</div>
+            <div class="font-bold text-gray-800 text-xs sm:text-sm truncate">
+              Result
+            </div>
             <div class="text-gray-600 text-xs mt-1">2024-9-6</div>
           </div>
         </div>
