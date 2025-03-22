@@ -31,32 +31,6 @@ def get_all_products(decoded_token):
             'message': f'Server error: {str(e)}'
         }), 500
 
-# สร้าง API สำหรับดึงคอมเมนต์ของสินค้าจากตาราง comments
-@api_bp.route('/product/<int:product_id>/comments', methods=['GET'])
-@jwt_required
-def get_comments_by_product_id(decoded_token, product_id):
-    try:
-        user_id = decoded_token['sub']
-
-        comments, error = Comment.get_by_product_id(product_id, user_id)
-        
-        if error:
-            return jsonify({
-                'status': 'error',
-                'message': error
-            }), 500
-        
-        return jsonify({
-            'status': 'success',
-            'data': comments
-        }), 200
-    
-    except Exception as e:
-        return jsonify({
-            'status': 'error',
-            'message': f'Server error: {str(e)}'
-        }), 500
-
 # สร้าง API สำหรับดึงข้อมูลสินค้าจากตาราง products ของ user ท
 @api_bp.route('/product', methods=['GET'])
 @jwt_required
@@ -82,6 +56,34 @@ def get_current_user_products(decoded_token):  # Renamed function
             'message': f'Server error: {str(e)}'
         }), 500
     
+@api_bp.route('/product/<int:product_id>', methods=['GET'])
+@jwt_required
+def get_product_by_id(decoded_token, product_id):
+    try:
+        product, error = Product.get_by_id(product_id)
+        
+        if error:
+            return jsonify({
+                'status': 'error',
+                'message': error
+            }), 500
+        
+        if not product:
+            return jsonify({
+                'status': 'error',
+                'message': 'Product not found'
+            }), 404
+        
+        return jsonify({
+            'status': 'success',
+            'data': product
+        }), 200
+    
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': f'Server error: {str(e)}'
+        }), 500
 
 @api_bp.route('/product/<int:product_id>/with-comments', methods=['GET'], endpoint='get_product_with_comments')
 @jwt_required
