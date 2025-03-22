@@ -1,6 +1,7 @@
 //  ์NOTE: Add
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { User } from '../../model/user';
 
 @Injectable({
   providedIn: 'root',
@@ -112,8 +113,13 @@ export class AuthService {
     return localStorage.getItem(this.authSecretKey);
   }
 
-  getUser(): object | null {
+  getUser(): User | null {
     const user = localStorage.getItem('user');
     return user ? JSON.parse(user) : null;
+  }
+
+  getCurrentUserId(): number | null {
+    const user = this.getUser();
+    return user ? user.userId : null;
   }
 }

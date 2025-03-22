@@ -1,11 +1,14 @@
 from flask import jsonify
 from api import api_bp
 from api.models.product import Product
+import logging
+from flask import request
 from auth import jwt_required  # เพิ่มการใช้ JWT
 from api.models.comment import Comment
 
+
 # สร้าง API สำหรับดึงข้อมูลจากตาราง products
-@api_bp.route('/product', methods=['GET'])
+@api_bp.route('/product', methods=['GET'], endpoint='get_all_products')
 @jwt_required
 def get_all_products(decoded_token):
     try:
@@ -28,35 +31,54 @@ def get_all_products(decoded_token):
             'message': f'Server error: {str(e)}'
         }), 500
 
-# สร้าง API สำหรับดึงข้อมูลจากตาราง products โดยระบุ product_id
-@api_bp.route('/product/<int:product_id>', methods=['GET'])
-@jwt_required
-def get_product_by_id(decoded_token, product_id):
-    try:
-        product, error = Product.get_by_id(product_id)
+# # สร้าง API สำหรับดึงข้อมูลจากตาราง products โดยระบุ product_id
+# @api_bp.route('/product/<int:product_id>', methods=['GET'], endpoint='get_product_by_id')
+# @jwt_required(optional=True)
+# def get_product_by_id(decoded_token, product_id):
+#     try:
+#         if decoded_token:
+#             # If token exists, use the user_id from the token
+#             user_id = decoded_token['sub']
+#             product, error = Product.get_by_user_id(user_id)
+            
+#             if error:
+#                 return jsonify({
+#                     'status': 'error',
+#                     'message': error
+#                 }), 404
         
-        if error:
-            status_code = 404 if 'not found' in error else 500
-            return jsonify({
-                'status': 'error',
-                'message': error
-            }), status_code
+#             # Return the product(s) for the given user
+#             return jsonify({
+#                 'status': 'success',
+#                 'data': product
+#             }), 200
         
-        return jsonify({
-            'status': 'success',
-            'data': product
-        }), 200
-    
-    except Exception as e:
-        return jsonify({
-            'status': 'error',
-            'message': f'Server error: {str(e)}'
-        }), 500
+#         else:
+#             # If no token is provided, fetch the product by product_id
+#             product, error = Product.get_by_id(product_id)
+            
+#             if error:
+#                 status_code = 404 if 'not found' in error else 500
+#                 return jsonify({
+#                     'status': 'error',
+#                     'message': error
+#                 }), status_code
+            
+#             return jsonify({
+#                 'status': 'success',
+#                 'data': product
+#             }), 200
+
+#     except Exception as e:
+#         return jsonify({
+#             'status': 'error',
+#             'message': f'Server error: {str(e)}'
+#         }), 500
 
 # สร้าง API สำหรับดึงคอมเมนต์ของสินค้าจากตาราง comments
-@api_bp.route('/product/<int:product_id>/comments', methods=['GET'])
+@api_bp.route('/product/<int:product_id>/comments', methods=['GET'], endpoint='get_comments_by_product_id')
 @jwt_required
-def get_comments_by_product_id(decoded_token,product_id):
+def get_comments_by_product_id(decoded_token, product_id):
     try:
         user_id = decoded_token['sub']
 
@@ -78,4 +100,5 @@ def get_comments_by_product_id(decoded_token,product_id):
             'status': 'error',
             'message': f'Server error: {str(e)}'
         }), 500
+
 

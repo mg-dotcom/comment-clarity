@@ -134,3 +134,25 @@ class User:
             except Exception as e:
                 print(f"Error getting user by ID: {str(e)}")
                 return None, str(e)   
+            
+    @staticmethod
+    def get_latest_product_by_user(user_id, limit=1):
+        try:
+            cursor = mysql.connection.cursor()
+            cursor.execute("""
+                SELECT p.productId, p.productName
+                FROM UserProducts up
+                JOIN products p ON up.productId = p.productId
+                WHERE up.userId = %s
+                ORDER BY up.userProductId DESC
+                LIMIT %s
+            """, (user_id, limit))
+            
+            rows = cursor.fetchall()
+            cursor.close()
+            
+            products = [{'productId': row[0], 'productName': row[1]} for row in rows]
+            return products, None
+
+        except Exception as e:
+            return None, str(e)
