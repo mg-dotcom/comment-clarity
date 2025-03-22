@@ -7,13 +7,14 @@
   }"
 >
   <!-- Top section -->
-  <div class="flex flex-col items-center gap-5 w-full pt-6">
+  <div class="flex flex-col items-center gap-5 w-48 pt-6">
     <button
       class="text-lg sm:text-xl text-gray-700 hover:text-black transition-colors p-2 rounded-lg hover:bg-gray-100/20 w-full flex items-center justify-center lg:justify-start px-3"
       (click)="onToggleSidebar()"
       aria-label="Toggle Sidebar"
       [ngClass]="{
-        'bg-gray-100/20': isSidebarOpen
+        'bg-gray-100/20 !justify-start': isSidebarOpen,
+        'lg:hidden': !isSidebarOpen
       }"
     >
       <i class="fas fa-bars"></i>
@@ -27,11 +28,14 @@
     <a
       href="#"
       class="flex items-center justify-center lg:justify-start w-full px-3 py-2.5 hover:bg-gray-100/20 rounded-lg transition-colors"
+      [ngClass]="{ '!justify-start': isSidebarOpen }"
     >
       <i class="fas fa-home text-lg sm:text-xl text-gray-700"></i>
       <span
         class="ml-3 text-gray-700 text-sm font-medium whitespace-nowrap"
-        [ngClass]="{ 'hidden lg:inline': !isSidebarOpen }"
+        [ngClass]="{
+          'hidden lg:inline': !isSidebarOpen,
+        }"
         >Home</span
       >
     </a>
@@ -50,9 +54,10 @@
   </div>
 
   <button
-    class="text-lg sm:text-xl text-gray-700 hover:text-black transition-colors w-full mb-6 p-2 rounded-lg hover:bg-gray-100/20 flex items-center justify-center lg:justify-start px-3"
+    class="text-lg sm:text-xl text-gray-700 hover:text-black transition-colors w-48 mb-6 p-2 rounded-lg hover:bg-gray-100/20 flex items-center justify-center lg:justify-start px-3"
     (click)="onLogout()"
     aria-label="Logout"
+    [ngClass]="{ '!justify-start': isSidebarOpen }"
   >
     <i class="fas fa-sign-out-alt"></i>
     <span

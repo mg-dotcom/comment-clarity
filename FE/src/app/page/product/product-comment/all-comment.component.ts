@@ -5,10 +5,10 @@ import { ActivatedRoute } from '@angular/router';
 import { Comment } from '../../../model/comment';
 import { ProductService } from '../../../service/product/product.service';
 import { OnInit } from '@angular/core';
+import { ApiResponse, CommentsResponse } from '../../../model/comment';
 
 @Component({
   selector: 'app-all-comment',
-  standalone: true,
   imports: [CommonModule],
   templateUrl: './all-comment.component.html',
   styleUrl: './all-comment.component.css',
@@ -25,7 +25,7 @@ export class AllCommentComponent implements OnInit {
   ngOnInit(): void {
     this.activatedRoute.params.subscribe((params) => {
       this.productId = params['productId'];
-      this.loadComments()
+      this.loadComments();
     });
   }
 
@@ -36,9 +36,13 @@ export class AllCommentComponent implements OnInit {
     this.error = null;
 
     try {
-      const response = await this.productService.getAllComments(this.productId);
+      const response: CommentsResponse =
+        await this.productService.getProductWithAllComments(this.productId);
+
       if (response && response.data) {
-        this.comments = response.data;
+        this.comments = response.data.flatMap(
+          (product) => product.comments || []
+        );
       } else {
         this.error = 'No comments found';
         this.comments = [];

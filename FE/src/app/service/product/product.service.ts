@@ -15,7 +15,7 @@ export class ProductService {
 
   constructor(private router: Router) {}
 
-  async getAllComments(productId: string): Promise<CommentsResponse> {
+  async getProductWithAllComments(productId: string): Promise<CommentsResponse> {
     const accessToken = await this.authService.getToken();
 
     if (!accessToken) {
@@ -24,7 +24,7 @@ export class ProductService {
     }
 
     const response = await fetch(
-      `${this.apiUrl}/product/${productId}/comments`,
+      `${this.apiUrl}/product/${productId}/with-comments`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,

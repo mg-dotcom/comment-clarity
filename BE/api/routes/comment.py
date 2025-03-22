@@ -52,7 +52,7 @@ def get_comment_by_id(decoded_token,comment_id):
             'message': f'Server error: {str(e)}'
         }), 500
 
-# สร้าง API สำหรับดึงข้อมูลจากตาราง comments โดยระบุ user_id
+# สร้าง API สำหรับดึงข้อมูลจากตาราง All comments ของ user โดยไม่่ใช Product_id
 @api_bp.route('/comment/user', methods=['GET'])
 @jwt_required
 def get_user_comments(decoded_token):
