@@ -34,13 +34,6 @@ export const routes: Routes = [
           ),
       },
       {
-        path: 'add',
-        loadComponent: () =>
-          import(
-            './page/product/function/product-add/product-add.component'
-          ).then((m) => m.ProductAddComponent),
-      },
-      {
         path: ':productId',
         loadComponent: () =>
           import('./page/product/product-main/product.component').then(

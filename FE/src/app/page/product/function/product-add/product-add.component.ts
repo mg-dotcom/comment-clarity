@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormsModule,
@@ -7,14 +7,8 @@ import {
   FormControl,
   Validators,
 } from '@angular/forms';
-import { Router } from '@angular/router';
-import {
-  trigger,
-  transition,
-  style,
-  animate,
-  state,
-} from '@angular/animations';
+import { ModalService } from '../../../../service/modal.service';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-product-add-modal',
@@ -22,64 +16,45 @@ import {
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './product-add.component.html',
   animations: [
-    trigger('modalAnimation', [
-      state(
-        'void',
-        style({
-          opacity: 0,
-          transform: 'scale(0.95)',
-        })
-      ),
-      state(
-        '*',
-        style({
-          opacity: 1,
-          transform: 'scale(1)',
-        })
-      ),
-      transition('void => *', [
-        animate('250ms cubic-bezier(0.4, 0.0, 0.2, 1)'),
+    trigger('modalBackdrop', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('200ms ease-out', style({ opacity: 1 })),
       ]),
-      transition('* => void', [
-        animate('200ms cubic-bezier(0.4, 0.0, 0.2, 1)'),
+      transition(':leave', [
+        style({ opacity: 1 }),
+        animate('150ms ease-in', style({ opacity: 0 })),
       ]),
     ]),
-    trigger('overlayAnimation', [
-      state(
-        'void',
-        style({
-          opacity: 0,
-        })
-      ),
-      state(
-        '*',
-        style({
-          opacity: 1,
-        })
-      ),
-      transition('void => *', [
-        animate('250ms cubic-bezier(0.4, 0.0, 0.2, 1)'),
+    trigger('modalContainer', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'scale(0.95)' }),
+        animate('250ms ease-out', style({ opacity: 1, transform: 'scale(1)' })),
       ]),
-      transition('* => void', [
-        animate('200ms cubic-bezier(0.4, 0.0, 0.2, 1)'),
+      transition(':leave', [
+        style({ opacity: 1, transform: 'scale(1)' }),
+        animate(
+          '200ms ease-in',
+          style({ opacity: 0, transform: 'scale(0.95)' })
+        ),
       ]),
     ]),
   ],
 })
 export class ProductAddComponent {
   @Output() closeEvent = new EventEmitter<void>();
-  modalState = true;
+  modalService = inject(ModalService);
 
   productForm = new FormGroup({
     productName: new FormControl('', [Validators.required]),
   });
 
-  constructor(private router: Router) {}
+  constructor() {}
 
   onSubmit(): void {
     if (this.productForm.valid) {
       console.log('Form submitted:', this.productForm.value);
-      this.startCloseAnimation();
+      this.close();
     }
   }
 
@@ -98,20 +73,13 @@ export class ProductAddComponent {
     fileInput.click();
   }
 
-  startCloseAnimation(): void {
-    this.modalState = false;
-    setTimeout(() => {
+  close() {
+    this.modalService.hideProductAddModal();
+  }
+
+  closeModal(event: MouseEvent) {
+    if (event.target === event.currentTarget) {
       this.close();
-    }, 200);
-  }
-
-  close(): void {
-    this.closeEvent.emit();
-  }
-
-  closeModal(event: MouseEvent): void {
-    if ((event.target as HTMLElement).classList.contains('modal-backdrop')) {
-      this.startCloseAnimation();
     }
   }
 }

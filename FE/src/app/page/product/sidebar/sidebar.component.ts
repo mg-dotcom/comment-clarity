@@ -1,7 +1,8 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { AuthService } from '../../../service/authentication/auth.service';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router'; // ✅ Import Router
+import { Router } from '@angular/router';
+import { ModalService } from '../../../service/modal.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -13,6 +14,7 @@ import { Router } from '@angular/router'; // ✅ Import Router
 })
 export class SidebarComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
+  private modalService = inject(ModalService);
   private router = inject(Router); // ✅ Inject Router
   isSidebarOpen = false;
   private resizeListener!: () => void;
@@ -44,6 +46,6 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   onAddProduct(): void {
-    this.router.navigate(['/product/add']);
+    this.modalService.showProductAddModal();
   }
 }

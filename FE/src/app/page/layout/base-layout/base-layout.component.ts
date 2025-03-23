@@ -3,6 +3,8 @@ import { CommonModule, NgIf } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { SidebarComponent } from '../../product/sidebar/sidebar.component';
 import { HeaderComponent } from '../../product/header/header.component';
+import { Router, NavigationEnd, Event as RouterEvent } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-base-layout',
@@ -16,5 +18,29 @@ export class BaseLayoutComponent {
   isLoading = false;
   error: string | null = null;
 
-  constructor() {}
+  showAddProductModal = false;
+
+  constructor(private router: Router) {}
+
+  // base-layout.component.ts
+  ngOnInit() {
+    // ติดตามการเปลี่ยนแปลง URL
+    this.router.events
+      .pipe(
+        filter(
+          (event): event is NavigationEnd => event instanceof NavigationEnd
+        )
+      )
+      .subscribe((event: NavigationEnd) => {
+        // เช็คว่า URL ปัจจุบันเป็น product/add หรือไม่
+        this.showAddProductModal =
+          event.urlAfterRedirects.includes('/product/add');
+      });
+  }
+
+  hideAddProductModal() {
+    this.showAddProductModal = false;
+    // นำทางกลับไปยังหน้า product หลัก
+    this.router.navigate(['/product']);
+  }
 }
