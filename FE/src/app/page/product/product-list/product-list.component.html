@@ -1,1 +1,43 @@
-<p>product-list works!</p>
+<div class="w-full">
+  <main class="p-4 sm:p-6">
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 sm:mb-8">
+      <span class="from-gray-900 to-gray-800">PRODUCT LIST</span>
+    </h1>
+
+    <section class="mb-6 sm:mb-10">
+      <div class="relative">
+        <div
+          class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-5 md:gap-7 px-2 sm:px-4 py-4 sm:py-6"
+        >
+          <div class="product-card relative group cursor-pointer">
+            <div
+              class="absolute inset-0 rounded-xl overflow-hidden z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+            >
+              <div
+                class="glitter-effect absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+              ></div>
+            </div>
+            <div
+              class="w-full h-36 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center overflow-hidden shadow-md relative z-0 transition-all duration-500 group-hover:shadow-lg group-hover:scale-105 select-text cursor-pointer"
+              (click)="goToProductDetail()"
+            >
+              <div
+                class="absolute w-12 h-12 rounded-full bg-white/10 top-4 right-4 float-bubble-1"
+              ></div>
+              <div
+                class="absolute w-8 h-8 rounded-full bg-white/10 bottom-6 left-6 float-bubble-2"
+              ></div>
+              <div
+                class="absolute w-16 h-16 rounded-full bg-purple-300/10 -bottom-4 -right-4 float-bubble-3"
+              ></div>
+              <span
+                class="text-white text-xl font-semibold relative z-10 transition-all duration-300 group-hover:scale-110 group-hover:text-shadow"
+                >Notebook</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>

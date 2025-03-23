@@ -1,0 +1,316 @@
+<div class="w-full">
+  <!-- Content -->
+  <main class="p-4 sm:p-6">
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 sm:mb-8">
+      TWENTYWENDY
+    </h1>
+
+    <!-- History Section -->
+    <section class="mb-6 sm:mb-10">
+      <div
+        class="flex flex-col sm:flex-row sm:items-center sm:justify-between my-3 sm:my-5"
+      >
+        <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-2 sm:mb-0">
+          HISTORY
+        </h2>
+        <div>
+          <button
+            class="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+            routerLink="/home"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4 sm:h-5 sm:w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              />
+            </svg>
+            View All
+          </button>
+        </div>
+      </div>
+
+      <!-- Card container with responsive grid -->
+      <div
+        class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-5 md:gap-7 px-2 sm:px-4 py-4 sm:py-6"
+      >
+        <!-- All Comments Card  -->
+        <div
+          class="bg-card-bg rounded-lg overflow-hidden shadow-sm transition-all duration-300 hover:shadow-md hover:scale-105 cursor-pointer"
+        >
+          <div
+            class="w-full h-24 sm:h-32 bg-white flex justify-center items-center p-2"
+          >
+            <img
+              src="/home-pic/comment.png"
+              alt="Comment"
+              class="max-w-full max-h-full object-contain"
+              loading="lazy"
+            />
+          </div>
+          <div class="p-2">
+            <div class="font-bold text-gray-800 text-xs sm:text-sm">
+              All Comments
+            </div>
+            <div class="text-gray-600 text-xs mt-1">2024-9-6</div>
+          </div>
+        </div>
+
+        <!-- Result Card  -->
+        <div
+          class="bg-card-bg rounded-lg overflow-hidden shadow-sm transition-all duration-300 hover:shadow-md hover:scale-105 cursor-pointer"
+        >
+          <div
+            class="w-full h-24 sm:h-32 bg-white flex justify-center items-center p-2"
+          >
+            <img
+              src="/home-pic/pie-chart.png"
+              alt="Result Chart"
+              class="max-w-full max-h-full object-contain"
+              loading="lazy"
+            />
+          </div>
+          <div class="p-2">
+            <div class="font-bold text-gray-800 text-xs sm:text-sm truncate">
+              Result
+            </div>
+            <div class="text-gray-600 text-xs mt-1">2024-9-6</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="mb-6 sm:mb-10">
+      <div
+        class="flex flex-col sm:flex-row sm:items-center sm:justify-between my-3 sm:my-5"
+      >
+        <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-2 sm:mb-0">
+          PRODUCTS
+        </h2>
+        <div class="flex items-center gap-3">
+          <div class="relative">
+            <input
+              type="text"
+              placeholder="Search products..."
+              class="pl-8 pr-3 py-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300"
+            />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4 absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+          </div>
+          <select
+            class="border rounded-md py-1 px-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+          >
+            <option value="">Sort by</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="name">Name</option>
+            <option value="newest">Newest</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Product grid -->
+      <div
+        class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 px-2 sm:px-4 py-4 sm:py-6"
+      >
+        <!-- Product 1 -->
+        <div
+          class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
+        >
+          <div class="relative pb-[100%]">
+            <img
+              src="https://via.placeholder.com/300"
+              alt="Product 1"
+              class="absolute inset-0 w-full h-full object-cover"
+              loading="lazy"
+            />
+            <div
+              class="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full"
+            >
+              Sale
+            </div>
+          </div>
+          <div class="p-3">
+            <h3 class="font-semibold text-sm sm:text-base truncate">
+              Product Name 1
+            </h3>
+            <div class="flex items-center mt-1">
+              <span class="text-sm font-bold text-gray-900">$29.99</span>
+              <span class="ml-2 text-xs text-gray-500 line-through"
+                >$39.99</span
+              >
+            </div>
+            <div class="flex items-center mt-1 text-xs text-yellow-500">
+              ★★★★☆
+              <span class="text-gray-500 ml-1">(24)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 2 -->
+        <div
+          class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
+        >
+          <div class="relative pb-[100%]">
+            <img
+              src="https://via.placeholder.com/300"
+              alt="Product 2"
+              class="absolute inset-0 w-full h-full object-cover"
+              loading="lazy"
+            />
+          </div>
+          <div class="p-3">
+            <h3 class="font-semibold text-sm sm:text-base truncate">
+              Product Name 2
+            </h3>
+            <div class="flex items-center mt-1">
+              <span class="text-sm font-bold text-gray-900">$24.99</span>
+            </div>
+            <div class="flex items-center mt-1 text-xs text-yellow-500">
+              ★★★★★
+              <span class="text-gray-500 ml-1">(37)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 3 -->
+        <div
+          class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
+        >
+          <div class="relative pb-[100%]">
+            <img
+              src="https://via.placeholder.com/300"
+              alt="Product 3"
+              class="absolute inset-0 w-full h-full object-cover"
+              loading="lazy"
+            />
+            <div
+              class="absolute top-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-full"
+            >
+              New
+            </div>
+          </div>
+          <div class="p-3">
+            <h3 class="font-semibold text-sm sm:text-base truncate">
+              Product Name 3
+            </h3>
+            <div class="flex items-center mt-1">
+              <span class="text-sm font-bold text-gray-900">$19.99</span>
+            </div>
+            <div class="flex items-center mt-1 text-xs text-yellow-500">
+              ★★★☆☆
+              <span class="text-gray-500 ml-1">(12)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 4 -->
+        <div
+          class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
+        >
+          <div class="relative pb-[100%]">
+            <img
+              src="https://via.placeholder.com/300"
+              alt="Product 4"
+              class="absolute inset-0 w-full h-full object-cover"
+              loading="lazy"
+            />
+          </div>
+          <div class="p-3">
+            <h3 class="font-semibold text-sm sm:text-base truncate">
+              Product Name 4
+            </h3>
+            <div class="flex items-center mt-1">
+              <span class="text-sm font-bold text-gray-900">$34.99</span>
+            </div>
+            <div class="flex items-center mt-1 text-xs text-yellow-500">
+              ★★★★☆
+              <span class="text-gray-500 ml-1">(42)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 5 -->
+        <div
+          class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
+        >
+          <div class="relative pb-[100%]">
+            <img
+              src="https://via.placeholder.com/300"
+              alt="Product 5"
+              class="absolute inset-0 w-full h-full object-cover"
+              loading="lazy"
+            />
+            <div
+              class="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full"
+            >
+              Sale
+            </div>
+          </div>
+          <div class="p-3">
+            <h3 class="font-semibold text-sm sm:text-base truncate">
+              Product Name 5
+            </h3>
+            <div class="flex items-center mt-1">
+              <span class="text-sm font-bold text-gray-900">$22.99</span>
+              <span class="ml-2 text-xs text-gray-500 line-through"
+                >$29.99</span
+              >
+            </div>
+            <div class="flex items-center mt-1 text-xs text-yellow-500">
+              ★★★★☆
+              <span class="text-gray-500 ml-1">(18)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div class="flex justify-center mt-6">
+        <nav class="flex items-center space-x-1">
+          <a
+            href="#"
+            class="px-3 py-1 rounded-md bg-gray-200 text-gray-600 hover:bg-gray-300"
+            >Previous</a
+          >
+          <a href="#" class="px-3 py-1 rounded-md bg-blue-500 text-white">1</a>
+          <a
+            href="#"
+            class="px-3 py-1 rounded-md bg-gray-200 text-gray-600 hover:bg-gray-300"
+            >2</a
+          >
+          <a
+            href="#"
+            class="px-3 py-1 rounded-md bg-gray-200 text-gray-600 hover:bg-gray-300"
+            >3</a
+          >
+          <a
+            href="#"
+            class="px-3 py-1 rounded-md bg-gray-200 text-gray-600 hover:bg-gray-300"
+            >Next</a
+          >
+        </nav>
+      </div>
+    </section>
+  </main>
+</div>

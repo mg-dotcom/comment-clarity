@@ -1,0 +1,71 @@
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.shimmer-effect {
+  animation: shimmer 2s infinite;
+}
+
+@keyframes glitter {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.glitter-effect {
+  animation: glitter 1.5s infinite;
+}
+
+@keyframes float1 {
+  0%,
+  100% {
+    transform: translateY(0) translateX(0);
+  }
+  50% {
+    transform: translateY(-10px) translateX(5px);
+  }
+}
+
+@keyframes float2 {
+  0%,
+  100% {
+    transform: translateY(0) translateX(0);
+  }
+  50% {
+    transform: translateY(8px) translateX(-7px);
+  }
+}
+
+@keyframes float3 {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+  50% {
+    transform: translateY(-5px) rotate(10deg);
+  }
+}
+
+.float-bubble-1 {
+  animation: float1 6s ease-in-out infinite;
+}
+
+.float-bubble-2 {
+  animation: float2 8s ease-in-out infinite;
+}
+
+.float-bubble-3 {
+  animation: float3 7s ease-in-out infinite;
+}
+
+.text-shadow {
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
