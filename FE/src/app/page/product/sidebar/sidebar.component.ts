@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { AuthService } from '../../../service/authentication/auth.service';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router'; // ✅ Import Router
 
 @Component({
   selector: 'app-sidebar',
@@ -12,6 +13,7 @@ import { CommonModule } from '@angular/common';
 })
 export class SidebarComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
+  private router = inject(Router); // ✅ Inject Router
   isSidebarOpen = false;
   private resizeListener!: () => void;
 
@@ -19,7 +21,6 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.checkScreenSize();
-
     this.resizeListener = () => this.checkScreenSize();
     window.addEventListener('resize', this.resizeListener);
   }
@@ -40,5 +41,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   async onLogout(): Promise<void> {
     this.authService.logout();
+  }
+
+  onAddProduct(): void {
+    this.router.navigate(['/product/add']);
   }
 }

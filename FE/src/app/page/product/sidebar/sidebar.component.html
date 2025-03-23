@@ -40,17 +40,18 @@
       >
     </a>
 
-    <a
-      href="#"
+    <button
+      (click)="onAddProduct()"
       class="flex items-center justify-center lg:justify-start w-full px-3 py-2.5 rounded-lg bg-add-button text-lg sm:text-xl text-gray-800 shadow-sm hover:bg-add-button-hover transition-all hover:shadow-md"
     >
       <i class="fas fa-plus"></i>
       <span
         class="ml-3 text-gray-800 text-sm font-medium whitespace-nowrap"
         [ngClass]="{ 'hidden lg:inline': !isSidebarOpen }"
-        >Add Product</span
       >
-    </a>
+        Add Product
+      </span>
+    </button>
   </div>
 
   <button

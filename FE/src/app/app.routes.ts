@@ -18,6 +18,7 @@ export const routes: Routes = [
         (m) => m.RegisterComponent
       ),
   },
+
   {
     path: 'product',
     loadComponent: () =>
@@ -31,6 +32,13 @@ export const routes: Routes = [
           import('./page/product/product-list/product-list.component').then(
             (m) => m.ProductListComponent
           ),
+      },
+      {
+        path: 'add',
+        loadComponent: () =>
+          import(
+            './page/product/function/product-add/product-add.component'
+          ).then((m) => m.ProductAddComponent),
       },
       {
         path: ':productId',
