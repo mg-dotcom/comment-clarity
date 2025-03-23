@@ -42,32 +42,6 @@ export class LoginComponent {
   }
 
   // ถ้ามี Product List เเล้ว
-  // async onSubmit(): Promise<void> {
-  //   if (this.loginForm.invalid) {
-  //     this.error = 'Please fill in all required fields correctly.';
-  //     return;
-  //   }
-
-  //   this.loading = true;
-  //   const { email, password } = this.loginForm.value;
-
-  //   try {
-  //     const status = await this.authService.login(email, password);
-  //     if (status === 'success') {
-  //       const returnUrl =
-  //         this.route.snapshot.queryParams['returnUrl'] || '/product';
-  //       this.router.navigateByUrl(returnUrl);
-  //     } else {
-  //       this.error = 'Invalid email or password';
-  //     }
-  //   } catch (err: any) {
-  //     this.error = err?.message || 'An error occurred during login';
-  //   } finally {
-  //     this.loading = false;
-  //   }
-  // }
-
-  // ถ้ามียังไม่มี Product List ให้ redirect ไปที่ firstProduct ของ User
   async onSubmit(): Promise<void> {
     if (this.loginForm.invalid) {
       this.error = 'Please fill in all required fields correctly.';
@@ -80,26 +54,9 @@ export class LoginComponent {
     try {
       const status = await this.authService.login(email, password);
       if (status === 'success') {
-        if (this.route.snapshot.queryParams['returnUrl']) {
-          this.router.navigateByUrl(
-            this.route.snapshot.queryParams['returnUrl']
-          );
-          return;
-        }
-
-        try {
-          const firstProduct = await this.productService.getUserFirstProduct();
-
-          if (firstProduct && firstProduct.productId) {
-            // ถ้ามีสินค้า ให้ redirect ไปที่หน้ารายละเอียดของสินค้าแรก
-            this.router.navigate(['/product', firstProduct.productId]);
-          } else {
-            this.router.navigate(['/product']);
-          }
-        } catch (productErr) {
-          console.error('Error fetching user products:', productErr);
-          this.router.navigate(['/product']);
-        }
+        const returnUrl =
+          this.route.snapshot.queryParams['returnUrl'] || '/product';
+        this.router.navigateByUrl(returnUrl);
       } else {
         this.error = 'Invalid email or password';
       }
@@ -109,4 +66,47 @@ export class LoginComponent {
       this.loading = false;
     }
   }
+
+  // ถ้ามียังไม่มี Product List ให้ redirect ไปที่ firstProduct ของ User
+  // async onSubmit(): Promise<void> {
+  //   if (this.loginForm.invalid) {
+  //     this.error = 'Please fill in all required fields correctly.';
+  //     return;
+  //   }
+
+  //   this.loading = true;
+  //   const { email, password } = this.loginForm.value;
+
+  //   try {
+  //     const status = await this.authService.login(email, password);
+  //     if (status === 'success') {
+  //       if (this.route.snapshot.queryParams['returnUrl']) {
+  //         this.router.navigateByUrl(
+  //           this.route.snapshot.queryParams['returnUrl']
+  //         );
+  //         return;
+  //       }
+
+  //       try {
+  //         const firstProduct = await this.productService.getUserFirstProduct();
+
+  //         if (firstProduct && firstProduct.productId) {
+  //           // ถ้ามีสินค้า ให้ redirect ไปที่หน้ารายละเอียดของสินค้าแรก
+  //           this.router.navigate(['/product', firstProduct.productId]);
+  //         } else {
+  //           this.router.navigate(['/product']);
+  //         }
+  //       } catch (productErr) {
+  //         console.error('Error fetching user products:', productErr);
+  //         this.router.navigate(['/product']);
+  //       }
+  //     } else {
+  //       this.error = 'Invalid email or password';
+  //     }
+  //   } catch (err: any) {
+  //     this.error = err?.message || 'An error occurred during login';
+  //   } finally {
+  //     this.loading = false;
+  //   }
+  // }
 }

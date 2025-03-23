@@ -10,15 +10,13 @@ export class ModalService {
   private productAddModalVisibleSource = new BehaviorSubject<boolean>(false);
   productAddModalVisible$ = this.productAddModalVisibleSource.asObservable();
 
-  constructor(private location: Location) {}
+  constructor() {}
 
   showProductAddModal() {
     this.productAddModalVisibleSource.next(true);
   }
 
   hideProductAddModal() {
-    this.location.back();
-
     this.productAddModalVisibleSource.next(false);
   }
 }
