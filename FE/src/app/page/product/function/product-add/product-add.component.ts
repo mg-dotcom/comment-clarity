@@ -107,7 +107,6 @@ export class ProductAddComponent {
 
   close(): void {
     this.closeEvent.emit();
-    this.router.navigate(['/product']);
   }
 
   closeModal(event: MouseEvent): void {
