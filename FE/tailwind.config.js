@@ -2,6 +2,9 @@
 module.exports = {
   content: ["./src/**/*.{html,ts}"],
   theme: {
+    fontFamily: {
+      sans: ["Poppins", "Sarabun", "sans-serif"],
+    },
     extend: {
       screens: {
         sm: "640px",
