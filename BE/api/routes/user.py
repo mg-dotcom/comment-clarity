@@ -4,6 +4,7 @@ from flask import request
 from api.models.user import User
 from flask import Response
 from flask_jwt_extended import create_access_token
+from auth import jwt_required  # เพิ่มการใช้ JWT
 
 # สร้าง API สำหรับดึงข้อมูลจากตาราง users
 @api_bp.route('/users', methods=['GET'])
@@ -99,7 +100,7 @@ def login_user():
     user = User.login(email, password)
     
     if user:
-        access_token = create_access_token(identity=user.userId)
+        access_token = create_access_token(identity=str(user.userId))
         
         return jsonify({
             'status': 'success',
@@ -118,3 +119,19 @@ def login_user():
         'status': 'error',
         'message': 'Invalid email or password'
     }), 401
+
+@api_bp.route('/users/firstProducts', methods=['GET'])
+@jwt_required
+def get_user_products(decoded_token):
+    try:
+        user_id = decoded_token['sub']
+
+        products, error = User.get_latest_product_by_user(user_id)
+
+        if error:
+            return jsonify({'status': 'error', 'message': error}), 500
+
+        return jsonify({'status': 'success', 'data': products}), 200
+
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500

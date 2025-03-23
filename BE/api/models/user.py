@@ -34,12 +34,11 @@ class User:
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
         try:
             cursor = mysql.connection.cursor()
-            # ตั้งค่าโซนเวลาก่อนที่จะทำการ insert
-            cursor.execute("SET time_zone = '+7:00'")
             cursor.execute("""
                 INSERT INTO users (firstName, lastName, email, password, createdAt) 
-                VALUES (%s, %s, %s, %s, NOW())
+                VALUES (%s, %s, %s, %s, CONVERT_TZ(NOW(), '+00:00', '+07:00'))
             """, (firstName, lastName, email, hashed_password))
+
             mysql.connection.commit()
             cursor.close()
             return True
@@ -135,3 +134,25 @@ class User:
             except Exception as e:
                 print(f"Error getting user by ID: {str(e)}")
                 return None, str(e)   
+            
+    @staticmethod
+    def get_latest_product_by_user(user_id, limit=1):
+        try:
+            cursor = mysql.connection.cursor()
+            cursor.execute("""
+                SELECT p.productId, p.productName
+                FROM UserProducts up
+                JOIN products p ON up.productId = p.productId
+                WHERE up.userId = %s
+                ORDER BY up.userProductId DESC
+                LIMIT %s
+            """, (user_id, limit))
+            
+            rows = cursor.fetchall()
+            cursor.close()
+            
+            products = [{'productId': row[0], 'productName': row[1]} for row in rows]
+            return products, None
+
+        except Exception as e:
+            return None, str(e)

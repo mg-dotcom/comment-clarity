@@ -1,6 +1,7 @@
 //  ์NOTE: Add
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { User } from '../../model/user';
 
 @Injectable({
   providedIn: 'root',
@@ -82,7 +83,13 @@ export class AuthService {
     }
   }
 
-  private async checkAuthStatus(): Promise<void> {
+  clearAuthData(): void {
+    localStorage.removeItem(this.authSecretKey);
+    localStorage.removeItem('user');
+    this.isAuthenticated = false;
+  }
+
+  async checkAuthStatus(): Promise<void> {
     const token = localStorage.getItem(this.authSecretKey);
     this.isAuthenticated = !!token;
     if (token) {
@@ -91,10 +98,12 @@ export class AuthService {
         const expiry = payload.exp;
         const now = Math.floor(Date.now() / 1000);
         if (expiry < now) {
-          this.logout();
+          this.clearAuthData();
+          this.router.navigate(['/login']);
         }
       } catch (e) {
-        this.logout();
+        this.clearAuthData();
+        this.router.navigate(['/login']);
       }
     }
   }
@@ -104,8 +113,13 @@ export class AuthService {
     return localStorage.getItem(this.authSecretKey);
   }
 
-  getUser(): object | null {
+  getUser(): User | null {
     const user = localStorage.getItem('user');
     return user ? JSON.parse(user) : null;
+  }
+
+  getCurrentUserId(): number | null {
+    const user = this.getUser();
+    return user ? user.userId : null;
   }
 }

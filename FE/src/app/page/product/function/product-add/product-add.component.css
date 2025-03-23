@@ -1,0 +1,12 @@
+:host {
+  display: block;
+}
+
+.modal-container {
+  will-change: transform, opacity;
+  transform-origin: center center;
+}
+
+.modal-backdrop {
+  will-change: opacity;
+}
