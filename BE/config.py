@@ -3,7 +3,7 @@ mysql_config = {
     'HOST': 'localhost',  
     'PORT': 3306,         
     'USER': 'root',
-    'PASSWORD': 'momor123',
+    'PASSWORD': 'root', # Change this to your MySQL password
     'DATABASE': 'community_clarity_schema'
 }
 
