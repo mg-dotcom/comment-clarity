@@ -45,17 +45,62 @@ export class ProductAddComponent {
   @Output() closeEvent = new EventEmitter<void>();
   modalService = inject(ModalService);
 
-  productForm = new FormGroup({
-    productName: new FormControl('', [Validators.required]),
-  });
+  months = [
+    { value: 1, name: 'January' },
+    { value: 2, name: 'February' },
+    { value: 3, name: 'March' },
+    { value: 4, name: 'April' },
+    { value: 5, name: 'May' },
+    { value: 6, name: 'June' },
+    { value: 7, name: 'July' },
+    { value: 8, name: 'August' },
+    { value: 9, name: 'September' },
+    { value: 10, name: 'October' },
+    { value: 11, name: 'November' },
+    { value: 12, name: 'December' },
+  ];
 
-  constructor() {}
+  years: number[];
+
+  productForm: FormGroup;
+
+  constructor() {
+    // Generate years from current year - 10 to current year + 10
+    const currentYear = new Date().getFullYear();
+    this.years = Array.from({ length: 21 }, (_, i) => currentYear - 10 + i);
+
+    // Initialize form with default values and new form controls
+    this.productForm = new FormGroup({
+      productName: new FormControl('', [Validators.required]),
+      startMonth: new FormControl(new Date().getMonth() + 1, [
+        Validators.required,
+      ]),
+      startYear: new FormControl(currentYear, [Validators.required]),
+      endMonth: new FormControl(new Date().getMonth() + 1, [
+        Validators.required,
+      ]),
+      endYear: new FormControl(currentYear, [Validators.required]),
+    });
+  }
 
   onSubmit(): void {
-    if (this.productForm.valid) {
+    if (this.productForm.valid && !this.isDateRangeInvalid()) {
       console.log('Form submitted:', this.productForm.value);
       this.close();
     }
+  }
+
+  isDateRangeInvalid(): boolean {
+    const startYear = this.productForm.get('startYear')?.value;
+    const startMonth = this.productForm.get('startMonth')?.value;
+    const endYear = this.productForm.get('endYear')?.value;
+    const endMonth = this.productForm.get('endMonth')?.value;
+
+    // Compare years and months
+    if (startYear > endYear) return true;
+    if (startYear === endYear && startMonth > endMonth) return true;
+
+    return false;
   }
 
   importCSV(): void {
