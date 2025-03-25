@@ -1,13 +1,15 @@
 from app import mysql
 from flask import jsonify
 
+
+# NOTE: if ADD check if +7.00 is correct
 class Product:
     @staticmethod
     def get_all():
         try:
             cursor = mysql.connection.cursor()
             cursor.execute("""
-                SELECT productId, productName
+                SELECT productId, productName ,startDate , endDate, createdAt
                 FROM products
             """)
             
@@ -16,6 +18,9 @@ class Product:
                 product = {
                     'productId': row[0],
                     'productName': row[1],
+                    'startDate': row[2],
+                    'endDate': row[3],
+                    'createdAt': row[4]
                 }
                 products.append(product)
             
@@ -30,7 +35,7 @@ class Product:
         try:
             cursor = mysql.connection.cursor()
             cursor.execute("""
-                SELECT productId, productName
+                SELECT productId, productName, startDate, endDate, createdAt
                 FROM products
                 WHERE productId = %s
             """, (product_id,))
@@ -42,6 +47,10 @@ class Product:
                 product = {
                     'productId': row[0],
                     'productName': row[1],
+                    'startDate': row[2],
+                    'endDate': row[3],
+                    'createdAt': row[4]
+                    
                 }
                 return product, None
             else:
@@ -55,7 +64,7 @@ class Product:
         try:
             cursor = mysql.connection.cursor()
             cursor.execute("""
-                SELECT p.productId, p.productName, up.isCreator
+                SELECT p.productId, p.productName, p. startDate, p.endDate, p.createdAt, up.isCreator
                 FROM products p
                 JOIN userproducts up ON p.productId = up.productId
                 WHERE up.userId = %s
@@ -66,7 +75,10 @@ class Product:
                 product = {
                     'productId': row[0],
                     'productName': row[1],
-                    'isCreator': bool(row[2])
+                    'startDate': row[2],
+                    'endDate': row[3],
+                    'createdAt': row[4],
+                    'isCreator': bool(row[5])
                 }
                 products.append(product)
             

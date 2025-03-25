@@ -41,6 +41,9 @@ export class ProductListComponent implements OnInit {
           this.products = response.data.map((item) => ({
             productId: item.productId,
             productName: item.productName,
+            startDate: item.startDate,
+            endDate: item.endDate,
+            createdAt: item.createdAt,
           }));
         } else {
           this.products = [];

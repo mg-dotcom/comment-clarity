@@ -1,7 +1,6 @@
 export interface Comment {
-  comments: never[];
   commentId: number;
-  customerName: string;
+  ratings: number;
   text: string;
   timestamp: string;
   sentimentId: number;
@@ -13,7 +12,10 @@ export interface Comment {
 export interface ProductCommentsResponse {
   productId: number;
   productName: string;
-  comments: Comment[]; // Ensure this exists
+  startDate: string;
+  endDate: string;
+  createdAt: string;
+  comments: Comment[]; // This is correctly typed
 }
 
 export interface ApiResponse {
@@ -26,7 +28,24 @@ export interface CommentCategory {
   commentCategoryName: string;
 }
 
+export interface Comment {
+  commentId: number;
+  ratings: number;
+  text: string;
+  timestamp: string;
+  userName?: string;
+}
+
+export interface ProductCommentsFull {
+  comments: Comment[];
+  createdAt: string;
+  endDate: string;
+  productId: number;
+  productName: string;
+  startDate: string;
+}
+
 export interface CommentsResponse {
-  status: string;
-  data: Comment[];
+  status?: string;
+  data: ProductCommentsFull[];
 }

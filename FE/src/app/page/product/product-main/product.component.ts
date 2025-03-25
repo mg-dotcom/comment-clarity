@@ -16,7 +16,13 @@ export class ProductComponent implements OnInit {
   private activatedRoute = inject(ActivatedRoute);
   private productService = inject(ProductService);
   private router = inject(Router);
-  currentProduct: Product = { productId: 0, productName: '' };
+  currentProduct: Product = {
+    productId: 0,
+    productName: '',
+    startDate: '',
+    endDate: '',
+    createdAt: '',
+  };
   isLoading = false;
   error: string | null = null;
   isSidebarOpen = false;
@@ -57,6 +63,9 @@ export class ProductComponent implements OnInit {
           this.currentProduct = {
             productId: this.currentProduct.productId,
             productName: this.currentProduct.productName,
+            startDate: this.currentProduct.startDate,
+            endDate: this.currentProduct.endDate,
+            createdAt: this.currentProduct.createdAt,
           };
         } else {
           this.error = 'Invalid data format';
@@ -66,7 +75,13 @@ export class ProductComponent implements OnInit {
       console.error('Error fetching product:', err);
       this.error =
         err instanceof Error ? err.message : 'Failed to load product';
-      this.currentProduct = { productId: 0, productName: '' };
+      this.currentProduct = {
+        productId: 0,
+        productName: '',
+        startDate: '',
+        endDate: '',
+        createdAt: '',
+      };
     } finally {
       this.isLoading = false;
     }

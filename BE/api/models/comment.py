@@ -7,7 +7,7 @@ class Comment:
         try:
             cursor = mysql.connection.cursor()
             cursor.execute("""
-                SELECT commentId, customerName, text, timestamp, sentimentId, userId, productId, commentCategoryId 
+                SELECT commentId, ratings, text, timestamp, sentimentId, userId, productId, commentCategoryId 
                 FROM comments
             """)
             
@@ -15,7 +15,7 @@ class Comment:
             for row in cursor.fetchall():
                 comment = {
                     'commentId': row[0],
-                    'customerName': row[1],
+                    'ratings': row[1],
                     'text': row[2],
                     'timestamp': row[3].strftime('%Y-%m-%d %H:%M:%S') if row[3] else None,
                     'sentimentId': row[4],
@@ -36,7 +36,7 @@ class Comment:
         try:
             cursor = mysql.connection.cursor()
             cursor.execute("""
-                SELECT commentId, customerName, text, timestamp, sentimentId, userId, productId, commentCategoryId
+                SELECT commentId, ratings, text, timestamp, sentimentId, userId, productId, commentCategoryId
                 FROM comments
                 WHERE commentId = %s
             """, (comment_id,))
@@ -47,7 +47,7 @@ class Comment:
             if row:
                 comment = {
                     'commentId': row[0],
-                    'customerName': row[1],
+                    'ratings': row[1],
                     'text': row[2],
                     'timestamp': row[3].strftime('%Y-%m-%d %H:%M:%S') if row[3] else None,
                     'sentimentId': row[4],
@@ -67,7 +67,7 @@ class Comment:
         try:
             cursor = mysql.connection.cursor()
             cursor.execute("""
-                SELECT commentId, customerName, text, timestamp, sentimentId, userId, productId, commentCategoryId
+                SELECT commentId, ratings, text, timestamp, sentimentId, userId, productId, commentCategoryId
                 FROM comments
                 WHERE userId = %s
             """, (user_id,))
@@ -76,7 +76,7 @@ class Comment:
             for row in cursor.fetchall():
                 comment = {
                     'commentId': row[0],
-                    'customerName': row[1],
+                    'ratings': row[1],
                     'text': row[2],
                     'timestamp': row[3].strftime('%Y-%m-%d %H:%M:%S') if row[3] else None,
                     'sentimentId': row[4],
@@ -99,7 +99,7 @@ class Comment:
             
             if user_id:
                 cursor.execute("""
-                    SELECT c.commentId, c.text, c.timestamp, u.firstName, u.lastName, c.customerName
+                    SELECT c.commentId, c.text, c.timestamp, u.firstName, u.lastName, c.ratings
                     FROM comments c
                     JOIN users u ON c.userId = u.userId
                     WHERE c.productId = %s AND c.userId = %s
@@ -107,7 +107,7 @@ class Comment:
                 """, (product_id, user_id))
             else:
                 cursor.execute("""
-                    SELECT c.commentId, c.text, c.timestamp, u.firstName, u.lastName, c.customerName
+                    SELECT c.commentId, c.text, c.timestamp, u.firstName, u.lastName, c.ratings
                     FROM comments c
                     JOIN users u ON c.userId = u.userId
                     WHERE c.productId = %s
@@ -121,7 +121,7 @@ class Comment:
                     'text': row[1],
                     'timestamp': row[2].strftime('%Y-%m-%d %H:%M:%S') if row[2] else None,
                     'userName': f"{row[3]} {row[4]}",
-                    'customerName': row[5]
+                    'ratings': row[5]
                 }
                 comments.append(comment)
             

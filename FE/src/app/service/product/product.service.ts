@@ -61,6 +61,7 @@ export class ProductService {
       throw new Error('Failed to fetch comments');
     }
 
+    console.log('response:', response);
     return response.json();
   }
 
