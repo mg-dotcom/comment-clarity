@@ -88,6 +88,33 @@ class Product:
         except Exception as e:
             return None, str(e)
 
-
-
-
+    @staticmethod
+    def get_sentiment_by_product_id(product_id, user_id):
+        try:
+            cursor = mysql.connection.cursor()
+            cursor.execute("""
+                SELECT sa.sentimentType, c.commentId
+                FROM sentimentAnalysis sa
+                JOIN comments c ON c.sentimentId = sa.sentimentId
+                WHERE c.productId = %s AND c.userId = %s
+            """, (product_id, user_id))
+            
+            sentiment_data = {}
+            for sentiment_type, comment_id in cursor.fetchall():
+                if sentiment_type not in sentiment_data:
+                    sentiment_data[sentiment_type] = {'count': 0, 'commentIds': []}
+                sentiment_data[sentiment_type]['count'] += 1
+                sentiment_data[sentiment_type]['commentIds'].append(comment_id)
+            
+            # Convert sentiment_data into the desired structure
+            sentiment_list = [{
+                'sentimentType': sentiment_type,
+                'count': len(data['commentIds']),
+                'commentIds': data['commentIds']  # List should be correctly formatted without spaces
+            } for sentiment_type, data in sentiment_data.items()]
+            
+            cursor.close()
+            return sentiment_list, None
+        
+        except Exception as e:
+            return None, str(e)
