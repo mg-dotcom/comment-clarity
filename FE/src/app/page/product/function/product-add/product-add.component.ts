@@ -45,29 +45,38 @@ export class ProductAddComponent {
   @Output() closeEvent = new EventEmitter<void>();
   modalService = inject(ModalService);
 
-  productForm = new FormGroup({
-    productName: new FormControl('', [Validators.required]),
-  });
+  productForm: FormGroup;
 
-  constructor() {}
+  constructor() {
+    this.productForm = new FormGroup({
+      productName: new FormControl('', [Validators.required]),
+      startDate: new FormControl('', [Validators.required]),
+      endDate: new FormControl('', [Validators.required]),
+    });
+  }
 
   onSubmit(): void {
-    if (this.productForm.valid) {
+    if (this.productForm.valid && !this.isDateRangeInvalid()) {
       console.log('Form submitted:', this.productForm.value);
       this.close();
     }
   }
 
+  isDateRangeInvalid(): boolean {
+    const startDate = new Date(this.productForm.get('startDate')?.value);
+    const endDate = new Date(this.productForm.get('endDate')?.value);
+    return startDate >= endDate;
+  }
+
   importCSV(): void {
-    console.log('Import Excel clicked');
+    console.log('Import CSV clicked');
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
     fileInput.accept = '.xlsx,.xls,.csv';
     fileInput.onchange = (event: Event) => {
       const target = event.target as HTMLInputElement;
       if (target.files && target.files.length > 0) {
-        const file = target.files[0];
-        console.log('Selected file:', file);
+        console.log('Selected file:', target.files[0]);
       }
     };
     fileInput.click();
@@ -75,11 +84,5 @@ export class ProductAddComponent {
 
   close() {
     this.modalService.hideProductAddModal();
-  }
-
-  closeModal(event: MouseEvent) {
-    if (event.target === event.currentTarget) {
-      this.close();
-    }
   }
 }

@@ -15,7 +15,31 @@ export class ProductService {
 
   constructor(private router: Router) {}
 
-  async getProductWithAllComments(productId: string): Promise<CommentsResponse> {
+  async getAllProducts(): Promise<ProductResponse> {
+    const accessToken = await this.authService.getToken();
+
+    if (!accessToken) {
+      this.router.navigate(['/login']);
+      throw new Error('Access token not found');
+    }
+
+    const response = await fetch(`${this.apiUrl}/product`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch products');
+    }
+
+    return response.json();
+  }
+
+  async getProductWithAllComments(
+    productId: string
+  ): Promise<CommentsResponse> {
     const accessToken = await this.authService.getToken();
 
     if (!accessToken) {
@@ -79,7 +103,7 @@ export class ProductService {
     }
   }
 
-  async getProdutById(productId: string): Promise<ProductResponse> {
+  async getProdutById(productId: number): Promise<ProductResponse> {
     const accessToken = await this.authService.getToken();
 
     if (!accessToken) {
