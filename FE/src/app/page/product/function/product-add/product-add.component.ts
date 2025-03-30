@@ -50,8 +50,9 @@ export class ProductAddComponent {
   constructor() {
     this.productForm = new FormGroup({
       productName: new FormControl('', [Validators.required]),
-      startDate: new FormControl('', [Validators.required]),
-      endDate: new FormControl('', [Validators.required]),
+      productLink: new FormControl('', [Validators.required]),
+      startDate: new FormControl('', [Validators.required]), // YYYY-MM
+      endDate: new FormControl('', [Validators.required]), // YYYY-MM
     });
   }
 
@@ -63,9 +64,12 @@ export class ProductAddComponent {
   }
 
   isDateRangeInvalid(): boolean {
-    const startDate = new Date(this.productForm.get('startDate')?.value);
-    const endDate = new Date(this.productForm.get('endDate')?.value);
-    return startDate >= endDate;
+    const startDate = this.productForm.get('startDate')?.value;
+    const endDate = this.productForm.get('endDate')?.value;
+
+    if (!startDate || !endDate) return false;
+
+    return startDate > endDate; // เปรียบเทียบ "YYYY-MM" ตรง ๆ ได้เลย
   }
 
   importCSV(): void {

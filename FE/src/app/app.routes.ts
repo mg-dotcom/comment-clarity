@@ -47,13 +47,6 @@ export const routes: Routes = [
             (m) => m.AllCommentComponent
           ),
       },
-      {
-        path: 'analytics/top-comment',
-        loadComponent: () =>
-          import(
-            './page/product/result/product-top-comment/product-top-comment.component'
-          ).then((m) => m.ProductTopCommentComponent),
-      },
     ],
   },
 ];
