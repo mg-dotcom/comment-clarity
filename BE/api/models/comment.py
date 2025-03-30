@@ -7,7 +7,7 @@ class Comment:
         try:
             cursor = mysql.connection.cursor()
             cursor.execute("""
-                SELECT commentId, ratings, text, timestamp, sentimentId, userId, productId, commentCategoryId 
+                SELECT commentId, ratings, text, date, sentimentId, userId, productId, commentCategoryId 
                 FROM comments
             """)
             
@@ -17,7 +17,7 @@ class Comment:
                     'commentId': row[0],
                     'ratings': row[1],
                     'text': row[2],
-                    'timestamp': row[3].strftime('%Y-%m-%d %H:%M:%S') if row[3] else None,
+                    'date': row[3].strftime('%Y-%m-%d') if row[3] else None,
                     'sentimentId': row[4],
                     'userId': row[5],
                     'productId': row[6],
@@ -36,7 +36,7 @@ class Comment:
         try:
             cursor = mysql.connection.cursor()
             cursor.execute("""
-                SELECT commentId, ratings, text, timestamp, sentimentId, userId, productId, commentCategoryId
+                SELECT commentId, ratings, text, date, sentimentId, userId, productId, commentCategoryId
                 FROM comments
                 WHERE commentId = %s
             """, (comment_id,))
@@ -49,7 +49,7 @@ class Comment:
                     'commentId': row[0],
                     'ratings': row[1],
                     'text': row[2],
-                    'timestamp': row[3].strftime('%Y-%m-%d %H:%M:%S') if row[3] else None,
+                    'date': row[3].strftime('%Y-%m-%d') if row[3] else None,
                     'sentimentId': row[4],
                     'userId': row[5],
                     'productId': row[6],
@@ -67,7 +67,7 @@ class Comment:
         try:
             cursor = mysql.connection.cursor()
             cursor.execute("""
-                SELECT commentId, ratings, text, timestamp, sentimentId, userId, productId, commentCategoryId
+                SELECT commentId, ratings, text, date, sentimentId, userId, productId, commentCategoryId
                 FROM comments
                 WHERE userId = %s
             """, (user_id,))
@@ -78,7 +78,7 @@ class Comment:
                     'commentId': row[0],
                     'ratings': row[1],
                     'text': row[2],
-                    'timestamp': row[3].strftime('%Y-%m-%d %H:%M:%S') if row[3] else None,
+                    'date': row[3].strftime('%Y-%m-%d') if row[3] else None,
                     'sentimentId': row[4],
                     'userId': row[5],
                     'productId': row[6],
@@ -99,19 +99,19 @@ class Comment:
             
             if user_id:
                 cursor.execute("""
-                    SELECT c.commentId, c.text, c.timestamp, u.firstName, u.lastName, c.ratings
+                    SELECT c.commentId, c.text, c.date, u.firstName, u.lastName, c.ratings
                     FROM comments c
                     JOIN users u ON c.userId = u.userId
                     WHERE c.productId = %s AND c.userId = %s
-                    ORDER BY c.timestamp DESC
+                    ORDER BY c.date DESC
                 """, (product_id, user_id))
             else:
                 cursor.execute("""
-                    SELECT c.commentId, c.text, c.timestamp, u.firstName, u.lastName, c.ratings
+                    SELECT c.commentId, c.text, c.date, u.firstName, u.lastName, c.ratings
                     FROM comments c
                     JOIN users u ON c.userId = u.userId
                     WHERE c.productId = %s
-                    ORDER BY c.timestamp DESC
+                    ORDER BY c.date DESC
                 """, (product_id,))
             
             comments = []
@@ -119,7 +119,7 @@ class Comment:
                 comment = {
                     'commentId': row[0],
                     'text': row[1],
-                    'timestamp': row[2].strftime('%Y-%m-%d %H:%M:%S') if row[2] else None,
+                    'date': row[2].strftime('%Y-%m-%d') if row[2] else None,
                     'userName': f"{row[3]} {row[4]}",
                     'ratings': row[5]
                 }
@@ -131,7 +131,6 @@ class Comment:
         except Exception as e:
             return None, str(e)
         
-      
     @staticmethod
     def get_sentiment_by_category(product_id, user_id=None):
         try:
@@ -199,6 +198,113 @@ class Comment:
                     categories[category][f"{sentiment} (%)"] = percentage
             
             return categories, None
+            
+        except Exception as e:
+            return None, str(e)
+
+    @staticmethod
+    def get_ratings_by_product(product_id, user_id=None):
+        try:
+            cursor = mysql.connection.cursor()
+
+            query = """
+                SELECT 
+                    c.ratings,
+                    COUNT(*) as count
+                FROM comments c
+                WHERE c.productId = %s AND c.ratings IS NOT NULL
+            """
+            params = [product_id]
+            
+            if user_id is not None:
+                query += " AND c.userId = %s"
+                params.append(user_id)
+            
+            query += " GROUP BY c.ratings ORDER BY c.ratings DESC"
+            
+            cursor.execute(query, tuple(params))
+            results = cursor.fetchall()
+            cursor.close()
+            
+            ratings = {
+                "5-star": 0,
+                "4-star": 0,
+                "3-star": 0,
+                "2-star": 0,
+                "1-star": 0
+            }
+            
+            for row in results:
+                rating = row[0]  
+                count = row[1]   
+                
+                if 1 <= rating <= 5:
+                    ratings[f"{rating}-star"] = count
+            
+            return ratings, None
+                
+        except Exception as e:
+            return None, str(e)
+
+    @staticmethod
+    def get_sentiment_by_category_detail(product_id, category_name, user_id):
+        try:
+            cursor = mysql.connection.cursor()
+            
+            query = """
+                SELECT 
+                    c.commentId,
+                    c.ratings,
+                    c.text,
+                    c.date,
+                    CONCAT(u.firstName, ' ', u.lastName) as userName,
+                    sa.sentimentType
+                FROM comments c
+                JOIN users u ON c.userId = u.userId
+                JOIN sentimentanalysis sa ON c.sentimentId = sa.sentimentId
+                JOIN commentcategory cc ON c.commentCategoryId = cc.commentCategoryId
+                WHERE c.productId = %s
+                AND LOWER(cc.commentCategoryName) = LOWER(%s)
+                AND c.userId = %s
+            """
+            params = [product_id, category_name, user_id]
+            
+            cursor.execute(query, tuple(params))
+            comments = cursor.fetchall()
+            cursor.close()
+            
+            # Create result structure
+            result = {
+                "positive": {"comments": []},
+                "negative": {"comments": []},
+                "neutral": {"comments": []},
+                "none": {"comments": []}
+            }
+            
+            # Process comments - since we're not using dictionary cursor,
+            # we need to access values by position
+            for comment in comments:
+                # Assuming the order of fields in the query matches these indiceshttp://localhost:8080/api/product/1/result/category-detail?name=product
+                commentId = comment[0]
+                ratings = comment[1]
+                text = comment[2]
+                date = comment[3]
+                userName = comment[4]
+                sentimentType = comment[5].lower() if comment[5] else 'none'
+                
+                comment_obj = {
+                    "commentId": commentId,
+                    "ratings": ratings,
+                    "text": text,
+                    "date": date.strftime('%Y-%m-%d'),
+                    "userName": userName
+                }
+                
+                # Add to appropriate sentiment group
+                if sentimentType in result:
+                    result[sentimentType]["comments"].append(comment_obj)
+            
+            return result, None
             
         except Exception as e:
             return None, str(e)

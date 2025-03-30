@@ -2,7 +2,7 @@ export interface Comment {
   commentId: number;
   ratings: number;
   text: string;
-  timestamp: string;
+  date: string;
   sentimentId: number;
   userId: number;
   productId: number;
@@ -15,7 +15,7 @@ export interface ProductCommentsResponse {
   startDate: string;
   endDate: string;
   createdAt: string;
-  comments: Comment[]; // This is correctly typed
+  comments: Comment[]; 
 }
 
 export interface ApiResponse {
@@ -32,7 +32,7 @@ export interface Comment {
   commentId: number;
   ratings: number;
   text: string;
-  timestamp: string;
+  date: string;
   userName?: string;
 }
 

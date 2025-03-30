@@ -129,10 +129,9 @@ def get_product_with_comments(decoded_token, product_id):
 
 
 @api_bp.route('/product/<int:product_id>/result/category', methods=['GET'])
-@jwt_required
+@jwt_required()
 def get_product_sentiment_by_category(decoded_token, product_id):
     try:
-        # First check if product exists
         product, product_error = Product.get_by_id(product_id)
         
         if product_error:
@@ -159,6 +158,101 @@ def get_product_sentiment_by_category(decoded_token, product_id):
         return jsonify({
             'success': True,
             'data': categories
+        }), 200
+    
+    except Exception as e:
+        logging.error(f"Error in get_product_sentiment_by_category: {str(e)}")
+        return jsonify({
+            'success': False,
+            'message': f'Server error: {str(e)}'
+        }), 500   
+
+@api_bp.route('/product/<int:product_id>/ratings', methods=['GET'])
+@jwt_required()
+def get_product_ratings(decoded_token, product_id):
+    try:
+        product, product_error = Product.get_by_id(product_id)
+        
+        if product_error:
+            return jsonify({
+                'success': False,
+                'message': product_error
+            }), 500
+        
+        if not product:
+            return jsonify({
+                'success': False,
+                'message': 'Product not found'
+            }), 404
+        
+        user_id = decoded_token['sub']
+        ratings, error = Comment.get_ratings_by_product(product_id, user_id)
+        
+        if error:
+            return jsonify({
+                'success': False,
+                'message': error
+            }), 500
+        
+        return jsonify({
+            'success': True,
+            'data': {
+                'ratings': ratings
+            }
+        }), 200
+    
+    except Exception as e:
+        logging.error(f"Error in get_product_ratings: {str(e)}")
+        return jsonify({
+            'success': False,
+            'message': f'Server error: {str(e)}'
+        }), 500
+
+@api_bp.route('/product/<int:product_id>/result/category-detail', methods=['GET'])
+@jwt_required()
+def get_product_sentiment_by_category_detail(decoded_token, product_id):
+    try:
+        # รับค่าจาก query parameter
+        category_name = request.args.get('name', '').strip()
+        
+        # ตรวจสอบความถูกต้องของ category
+        valid_categories = ['product', 'delivery', 'service', 'other']
+        if not category_name or category_name.lower() not in valid_categories:
+            return jsonify({
+                'success': False,
+                'message': f'Invalid category. Valid categories are: {", ".join(valid_categories)}'
+            }), 400
+        
+        # ดึงข้อมูล product
+        product, product_error = Product.get_by_id(product_id)
+        
+        if product_error:
+            return jsonify({
+                'success': False,
+                'message': product_error
+            }), 500
+        
+        if not product:
+            return jsonify({
+                'success': False,
+                'message': 'Product not found'
+            }), 404
+
+        # รับ user_id จาก decoded token
+        user_id = decoded_token['sub']
+        
+        # เรียกใช้งานฟังก์ชันเพื่อดึงข้อมูล sentiment
+        sentiment_data, error = Comment.get_sentiment_by_category_detail(product_id, category_name, user_id)
+        
+        if error:
+            return jsonify({
+                'success': False,
+                'message': error
+            }), 500
+        
+        return jsonify({
+            'success': True,
+            'data': sentiment_data
         }), 200
     
     except Exception as e:
