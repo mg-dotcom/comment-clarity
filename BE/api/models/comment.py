@@ -132,7 +132,7 @@ class Comment:
             return None, str(e)
         
     @staticmethod
-    def get_sentiment_by_category(product_id, user_id=None):
+    def get_sentiment_by_category(product_id, category_name=None, user_id=None):
         try:
             cursor = mysql.connection.cursor()
             
@@ -143,9 +143,9 @@ class Comment:
                     sa.sentimentType,
                     COUNT(*) as count,
                     (SELECT COUNT(*) 
-                     FROM comments c2
-                     JOIN commentcategory cc2 ON c2.commentCategoryId = cc2.commentCategoryId
-                     WHERE c2.productId = %s
+                    FROM comments c2
+                    JOIN commentcategory cc2 ON c2.commentCategoryId = cc2.commentCategoryId
+                    WHERE c2.productId = %s
             """
             
             params = [product_id]
@@ -155,7 +155,7 @@ class Comment:
                 params.append(user_id)
             
             query += """
-                     AND cc2.commentCategoryName = cc.commentCategoryName) as total
+                    AND cc2.commentCategoryName = cc.commentCategoryName) as total
                 FROM comments c
                 JOIN sentimentanalysis sa ON c.sentimentId = sa.sentimentId
                 JOIN commentcategory cc ON c.commentCategoryId = cc.commentCategoryId
@@ -163,7 +163,11 @@ class Comment:
             """
             params.append(product_id)
             
-
+            # Add category filter if provided
+            if category_name is not None:
+                query += " AND LOWER(cc.commentCategoryName) = LOWER(%s)"
+                params.append(category_name)
+            
             if user_id is not None:
                 query += " AND c.userId = %s"
                 params.append(user_id)
@@ -175,27 +179,38 @@ class Comment:
             results = cursor.fetchall()
             cursor.close()
             
-
             categories = {}
-
-            for category in ['Product', 'Delivery', 'Service', 'Other']:
-                categories[category.lower()] = {
+            
+            # If a specific category was requested, only initialize that one
+            if category_name:
+                categories[category_name.lower()] = {
                     "positive (%)": 0.0,
                     "negative (%)": 0.0,
                     "neutral (%)": 0.0,
                     "none (%)": 0.0
                 }
+            else:
+                # Otherwise initialize all categories
+                for category in ['Product', 'Delivery', 'Service', 'Other']:
+                    categories[category.lower()] = {
+                        "positive (%)": 0.0,
+                        "negative (%)": 0.0,
+                        "neutral (%)": 0.0,
+                        "none (%)": 0.0
+                    }
             
-
             for row in results:
-                category = row[0].lower()  
-                sentiment = row[1].lower()  
-                count = row[2] 
-                total = row[3] 
+                category = row[0].lower()
+                sentiment = row[1].lower() if row[1] else "none"
+                count = row[2]
+                total = row[3]
                 
                 if total > 0:
                     percentage = round((count / total) * 100, 1)
-                    categories[category][f"{sentiment} (%)"] = percentage
+                    
+                    # Only process this category if it matches our filter or if no filter
+                    if category in categories:
+                        categories[category][f"{sentiment} (%)"] = percentage
             
             return categories, None
             
@@ -273,18 +288,14 @@ class Comment:
             comments = cursor.fetchall()
             cursor.close()
             
-            # Create result structure
             result = {
                 "positive": {"comments": []},
                 "negative": {"comments": []},
                 "neutral": {"comments": []},
                 "none": {"comments": []}
             }
-            
-            # Process comments - since we're not using dictionary cursor,
-            # we need to access values by position
+
             for comment in comments:
-                # Assuming the order of fields in the query matches these indiceshttp://localhost:8080/api/product/1/result/category-detail?name=product
                 commentId = comment[0]
                 ratings = comment[1]
                 text = comment[2]
@@ -300,7 +311,6 @@ class Comment:
                     "userName": userName
                 }
                 
-                # Add to appropriate sentiment group
                 if sentimentType in result:
                     result[sentimentType]["comments"].append(comment_obj)
             

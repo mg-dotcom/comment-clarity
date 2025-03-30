@@ -127,11 +127,21 @@ def get_product_with_comments(decoded_token, product_id):
             'message': f'Server error: {str(e)}'
         }), 500
 
-
-@api_bp.route('/product/<int:product_id>/result/category', methods=['GET'])
+@api_bp.route('/product/<int:product_id>/result/category-average', methods=['GET'])
 @jwt_required()
-def get_product_sentiment_by_category(decoded_token, product_id):
+def get_product_sentiment_by_category_average(decoded_token, product_id):
     try:
+        category_name = request.args.get('name', '').strip()
+        
+        # Validate category if provided
+        if category_name:
+            valid_categories = ['product', 'delivery', 'service', 'other']
+            if category_name.lower() not in valid_categories:
+                return jsonify({
+                    'success': False,
+                    'message': f'Invalid category. Valid categories are: {", ".join(valid_categories)}'
+                }), 400
+        
         product, product_error = Product.get_by_id(product_id)
         
         if product_error:
@@ -147,7 +157,7 @@ def get_product_sentiment_by_category(decoded_token, product_id):
             }), 404
 
         user_id = decoded_token['sub']
-        categories, error = Comment.get_sentiment_by_category(product_id, user_id)
+        categories, error = Comment.get_sentiment_by_category(product_id, category_name, user_id)
         
         if error:
             return jsonify({
@@ -161,11 +171,11 @@ def get_product_sentiment_by_category(decoded_token, product_id):
         }), 200
     
     except Exception as e:
-        logging.error(f"Error in get_product_sentiment_by_category: {str(e)}")
+        logging.error(f"Error in get_product_sentiment_by_category_average: {str(e)}")
         return jsonify({
             'success': False,
             'message': f'Server error: {str(e)}'
-        }), 500   
+        }), 500
 
 @api_bp.route('/product/<int:product_id>/ratings', methods=['GET'])
 @jwt_required()
