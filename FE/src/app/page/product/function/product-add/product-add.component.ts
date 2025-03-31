@@ -72,19 +72,19 @@ export class ProductAddComponent {
     return startDate > endDate; // เปรียบเทียบ "YYYY-MM" ตรง ๆ ได้เลย
   }
 
-  importCSV(): void {
-    console.log('Import CSV clicked');
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = '.xlsx,.xls,.csv';
-    fileInput.onchange = (event: Event) => {
-      const target = event.target as HTMLInputElement;
-      if (target.files && target.files.length > 0) {
-        console.log('Selected file:', target.files[0]);
-      }
-    };
-    fileInput.click();
-  }
+  // importCSV(): void {
+  //   console.log('Import CSV clicked');
+  //   const fileInput = document.createElement('input');
+  //   fileInput.type = 'file';
+  //   fileInput.accept = '.xlsx,.xls,.csv';
+  //   fileInput.onchange = (event: Event) => {
+  //     const target = event.target as HTMLInputElement;
+  //     if (target.files && target.files.length > 0) {
+  //       console.log('Selected file:', target.files[0]);
+  //     }
+  //   };
+  //   fileInput.click();
+  // }
 
   close() {
     this.modalService.hideProductAddModal();

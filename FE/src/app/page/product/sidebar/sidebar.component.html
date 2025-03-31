@@ -26,7 +26,7 @@
     </button>
 
     <a
-      href="#"
+      [routerLink]="['/product']"
       class="flex items-center justify-center lg:justify-start w-full px-3 py-2.5 hover:bg-gray-100/20 rounded-lg transition-colors"
       [ngClass]="{ '!justify-start': isSidebarOpen }"
     >
@@ -37,6 +37,20 @@
           'hidden lg:inline': !isSidebarOpen,
         }"
         >Home</span
+      >
+    </a>
+    <a
+      [routerLink]="['/product/separation-criteria']"
+      class="flex items-center justify-center lg:justify-start w-full px-3 py-2.5 hover:bg-gray-100/20 rounded-lg transition-colors"
+      [ngClass]="{ '!justify-start': isSidebarOpen }"
+    >
+      <i class="fas fa-face-smile text-lg sm:text-xl text-gray-700"></i>
+      <span
+        class="ml-3 text-gray-700 text-sm font-medium whitespace-nowrap"
+        [ngClass]="{
+        'hidden lg:inline': !isSidebarOpen,
+      }"
+        >Separation criteria</span
       >
     </a>
 

@@ -1,0 +1,83 @@
+<div class="w-full">
+  <main class="p-4 sm:p-6">
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 sm:mb-8">
+      <span class="from-gray-900 to-gray-800">SEPARATION CRITERIA</span>
+    </h1>
+
+    <section class="rounded-lg p-5">
+      <h2 class="text-xl font-semibold mb-4 text-gray-800">
+        แนวทางการแยกประเภทความคิดเห็น
+      </h2>
+      <p class="mb-3">
+        แนวทางการแยกประเภทความคิดเห็นเป็น Positive (POS), Neutral (NEU),
+        Negative (NEG), และ None ตามรูป มีดังนี้:
+      </p>
+
+      <div class="flex flex-col md:flex-row gap-6">
+        <div class="space-y-4 md:w-2/3">
+          <div class="p-3 border-l-4 border-green-500 bg-green-50">
+            <h3 class="font-bold text-green-700">1. Positive (POS)</h3>
+            <p>ความคิดเห็นที่แสดงความรู้สึกหรือทัศนคติเชิงบวก เช่น</p>
+            <ul class="list-disc pl-5">
+              <li>การชมเชย สนับสนุน หรือแสดงความพึงพอใจ</li>
+              <li>
+                มีคำที่สื่อถึงอารมณ์ดี เช่น ดีมาก, ชอบ, ประทับใจ, เยี่ยมยอด,
+                ยอดเยี่ยม, สวยงาม, สนุก, แนะนำ
+              </li>
+            </ul>
+          </div>
+
+          <div class="p-3 border-l-4 border-yellow-500 bg-yellow-50">
+            <h3 class="font-bold text-yellow-700">2. Neutral (NEU)</h3>
+            <p>ความคิดเห็นที่เป็นกลาง ไม่มีการแสดงอารมณ์ชัดเจน เช่น</p>
+            <ul class="list-disc pl-5">
+              <li>
+                การให้ข้อมูลหรือข้อเท็จจริงโดยไม่แสดงอารมณ์ เช่น สินค้า A มีขนาด
+                10 นิ้ว
+              </li>
+              <li>การถามคำถาม เช่น รุ่นนี้น้ำหนักเท่าไหร่?</li>
+              <li>
+                การเปรียบเทียบอย่างเป็นกลาง เช่น รุ่น A กับ B
+                ต่างกันที่ความจุแบตเตอรี่
+              </li>
+            </ul>
+          </div>
+
+          <div class="p-3 border-l-4 border-red-500 bg-red-50">
+            <h3 class="font-bold text-red-700">3. Negative (NEG)</h3>
+            <p>ความคิดเห็นที่แสดงความรู้สึกหรือทัศนคติเชิงลบ เช่น</p>
+            <ul class="list-disc pl-5">
+              <li>การบ่น ตำหนิ หรือไม่พอใจ</li>
+              <li>
+                มีคำที่สื่อถึงอารมณ์ลบ เช่น แย่, ไม่ดี, ห่วย, เสียใจ, ผิดหวัง,
+                ขยะ, โกง, ห่วยแตก
+              </li>
+            </ul>
+          </div>
+
+          <div class="p-3 border-l-4 border-gray-400 bg-gray-50">
+            <h3 class="font-bold text-gray-700">4. None</h3>
+            <p>
+              ความคิดเห็นที่ไม่เข้ากับเกณฑ์ POS, NEU หรือ NEG จะถูกจัดเป็น None
+            </p>
+            <ul class="list-disc pl-5">
+              <li>
+                ข้อความไม่มีความหมายชัดเจน หรือเป็นข้อความสุ่ม เช่น asdfghjkl
+              </li>
+              <li>คำที่ไม่มีอารมณ์ชัดเจน เช่น "รุ่นนี้เกี่ยวกับไหนดี?"</li>
+              <li>ข้อความที่เป็นแค่เครื่องหมาย เช่น !!! หรือ ???</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="md:w-1/3 flex items-center justify-center">
+          <img
+            src="/home-pic/seperation-criteria.png"
+            alt="Separation criteria diagram"
+            class="max-w-full h-auto"
+          />
+        </div>
+      </div>
+    </section>
+  </main>
+</div>

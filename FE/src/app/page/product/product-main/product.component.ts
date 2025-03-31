@@ -47,6 +47,10 @@ export class ProductComponent implements OnInit {
     this.router.navigate(['/product', this.productId, 'comments']);
   }
 
+  navigateToResult(): void {
+    this.router.navigate(['/product', this.productId, 'result', 'category']);
+  }
+
   async loadProductById(productId: number): Promise<void> {
     this.isLoading = true;
     this.error = null;

@@ -34,6 +34,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'separation-criteria',
+        loadComponent: () =>
+          import(
+            './page/product/separation-criteria/separation-criteria.component'
+          ).then((m) => m.SeparationCriteriaComponent),
+      },
+      {
         path: ':productId',
         loadComponent: () =>
           import('./page/product/product-main/product.component').then(
@@ -45,6 +52,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./page/product/product-comment/all-comment.component').then(
             (m) => m.AllCommentComponent
+          ),
+      },
+      {
+        path: ':productId/result/category',
+        loadComponent: () =>
+          import('./page/product/result/category/category.component').then(
+            (m) => m.CategoryComponent
           ),
       },
     ],

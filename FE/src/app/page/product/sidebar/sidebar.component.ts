@@ -3,11 +3,12 @@ import { AuthService } from '../../../service/authentication/auth.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ModalService } from '../../../service/modal.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css',
   providers: [AuthService],
@@ -15,7 +16,7 @@ import { ModalService } from '../../../service/modal.service';
 export class SidebarComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private modalService = inject(ModalService);
-  private router = inject(Router); // ✅ Inject Router
+  private router = inject(Router);
   isSidebarOpen = false;
   private resizeListener!: () => void;
 
