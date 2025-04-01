@@ -25,3 +25,17 @@ export interface ProductRatingResponse {
   };
   success: boolean;
 }
+
+export interface ProductSentiment {
+  'negative (%)': number;
+  'neutral (%)': number;
+  'none (%)': number;
+  'positive (%)': number;
+}
+
+export interface ProductSentimentResponse {
+  data: {
+    product: ProductSentiment;
+  };
+  success: boolean;
+}

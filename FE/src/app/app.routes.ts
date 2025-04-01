@@ -61,6 +61,13 @@ export const routes: Routes = [
             (m) => m.CategoryComponent
           ),
       },
+      {
+        path: ':productId/result/category-average',
+        loadComponent: () =>
+          import(
+            './page/product/result/category-average/category-average.component'
+          ).then((m) => m.CategoryAverageComponent),
+      },
     ],
   },
 ];

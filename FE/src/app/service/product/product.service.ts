@@ -4,7 +4,11 @@ import { environment } from '../../../environment/environment';
 import { AuthService } from '../authentication/auth.service';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { ProductResponse, ProductRatingResponse } from '../../model/product';
+import {
+  ProductResponse,
+  ProductRatingResponse,
+  ProductSentimentResponse,
+} from '../../model/product';
 
 @Injectable({
   providedIn: 'root',
@@ -148,6 +152,36 @@ export class ProductService {
 
     if (!response.ok) {
       throw new Error('Failed to fetch product ratings');
+    }
+
+    return response.json();
+  }
+
+  async getProductCategoryAverage(
+    productId: string,
+    categoryName?: string
+  ): Promise<ProductSentimentResponse> {
+    const accessToken = await this.authService.getToken();
+
+    if (!accessToken) {
+      this.router.navigate(['/login']);
+      throw new Error('Access token not found');
+    }
+
+    let url = `${this.apiUrl}/product/${productId}/result/category-average`;
+    if (categoryName) {
+      url += `?name=${encodeURIComponent(categoryName)}`;
+    }
+
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch product category average');
     }
 
     return response.json();

@@ -51,7 +51,7 @@ export class CategoryComponent implements OnInit {
     try {
       this.isLoading = true;
       this.error = null;
-      
+
       const response = await this.productService.getProductCommentRating(
         productId.toString()
       );
@@ -75,7 +75,12 @@ export class CategoryComponent implements OnInit {
     }
   }
 
-  navigateToReviewPage(category: string): void {
-    this.router.navigate(['/review', this.productId, category.toLowerCase()]);
+  navigateToCategory(category: string): void {
+    this.router.navigate(
+      [`/product/${this.productId}/result/category-average`],
+      {
+        queryParams: { name: category },
+      }
+    );
   }
 }

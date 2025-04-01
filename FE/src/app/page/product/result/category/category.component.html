@@ -8,7 +8,7 @@
       <div
         class="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"
       ></div>
-      <p class="mt-4 text-gray-600 font-medium">Loading Categories...</p>
+      <p class="mt-4 text-gray-600 font-medium">Loading categories...</p>
     </div>
 
     <!-- Error Message -->
@@ -128,6 +128,7 @@
           <ng-container *ngFor="let category of categories">
             <div
               class="rounded-lg overflow-hidden shadow-sm transition-all duration-200 hover:shadow-md hover:scale-102 cursor-pointer"
+              (click)="navigateToCategory(category.name.toLocaleLowerCase())"
             >
               <div class="bg-white p-4 flex justify-center items-center h-60">
                 <img
