@@ -136,7 +136,6 @@ class Comment:
         try:
             cursor = mysql.connection.cursor()
             
-            # Base query
             query = """
                 SELECT 
                     cc.commentCategoryName,
@@ -162,8 +161,7 @@ class Comment:
                 WHERE c.productId = %s
             """
             params.append(product_id)
-            
-            # Add category filter if provided
+
             if category_name is not None:
                 query += " AND LOWER(cc.commentCategoryName) = LOWER(%s)"
                 params.append(category_name)
@@ -180,8 +178,7 @@ class Comment:
             cursor.close()
             
             categories = {}
-            
-            # If a specific category was requested, only initialize that one
+
             if category_name:
                 categories[category_name.lower()] = {
                     "positive (%)": 0.0,
@@ -190,7 +187,6 @@ class Comment:
                     "none (%)": 0.0
                 }
             else:
-                # Otherwise initialize all categories
                 for category in ['Product', 'Delivery', 'Service', 'Other']:
                     categories[category.lower()] = {
                         "positive (%)": 0.0,
@@ -208,7 +204,6 @@ class Comment:
                 if total > 0:
                     percentage = round((count / total) * 100, 1)
                     
-                    # Only process this category if it matches our filter or if no filter
                     if category in categories:
                         categories[category][f"{sentiment} (%)"] = percentage
             
