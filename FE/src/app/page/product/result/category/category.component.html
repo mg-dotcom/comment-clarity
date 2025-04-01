@@ -1,6 +1,6 @@
 <div class="w-full">
   <main class="p-4 sm:p-8 flex flex-col flex-grow h-full">
-    <!-- Loading Indicator -->
+    <!-- Loading -->
     <div
       *ngIf="isLoading"
       class="flex flex-col items-center justify-center py-10"
@@ -19,7 +19,6 @@
       <p>{{ error }}</p>
     </div>
 
-    <!-- Main Content (only shown when not loading and no error) -->
     <ng-container *ngIf="!isLoading && !error">
       <!-- Header Section -->
       <section class="header-result flex-1">
