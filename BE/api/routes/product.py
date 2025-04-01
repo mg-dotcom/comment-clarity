@@ -132,8 +132,7 @@ def get_product_with_comments(decoded_token, product_id):
 def get_product_sentiment_by_category_average(decoded_token, product_id):
     try:
         category_name = request.args.get('name', '').strip()
-        
-        # Validate category if provided
+
         if category_name:
             valid_categories = ['product', 'delivery', 'service', 'other']
             if category_name.lower() not in valid_categories:
@@ -222,10 +221,8 @@ def get_product_ratings(decoded_token, product_id):
 @jwt_required()
 def get_product_sentiment_by_category_detail(decoded_token, product_id):
     try:
-        # รับค่าจาก query parameter
         category_name = request.args.get('name', '').strip()
         
-        # ตรวจสอบความถูกต้องของ category
         valid_categories = ['product', 'delivery', 'service', 'other']
         if not category_name or category_name.lower() not in valid_categories:
             return jsonify({
@@ -233,7 +230,6 @@ def get_product_sentiment_by_category_detail(decoded_token, product_id):
                 'message': f'Invalid category. Valid categories are: {", ".join(valid_categories)}'
             }), 400
         
-        # ดึงข้อมูล product
         product, product_error = Product.get_by_id(product_id)
         
         if product_error:
@@ -248,10 +244,7 @@ def get_product_sentiment_by_category_detail(decoded_token, product_id):
                 'message': 'Product not found'
             }), 404
 
-        # รับ user_id จาก decoded token
         user_id = decoded_token['sub']
-        
-        # เรียกใช้งานฟังก์ชันเพื่อดึงข้อมูล sentiment
         sentiment_data, error = Comment.get_sentiment_by_category_detail(product_id, category_name, user_id)
         
         if error:
