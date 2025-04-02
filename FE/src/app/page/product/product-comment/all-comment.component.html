@@ -5,8 +5,8 @@
 
     <section class="mb-10">
       <!-- Loading State -->
+      @if (isLoading) {
       <div
-        *ngIf="isLoading"
         class="mb-6 bg-white rounded-lg p-4 shadow-sm flex items-center justify-center"
         id="loadingState"
       >
@@ -34,10 +34,11 @@
           <span class="text-sm text-gray-600"> Loading comments... </span>
         </div>
       </div>
+      }
 
       <!-- Error State -->
+      @if (error) {
       <div
-        *ngIf="error"
         class="mb-6 bg-red-50 flex items-center justify-center gap-4 rounded-lg p-6 text-center shadow-sm"
         id="errorState"
       >
@@ -74,11 +75,13 @@
           </div>
         </div>
       </div>
+      }
 
       <!-- Comments List -->
-      <div *ngIf="!isLoading && !error" class="space-y-4">
+      @if (!isLoading && !error) {
+      <div class="space-y-4">
+        @for (comment of comments; track comment) {
         <div
-          *ngFor="let comment of comments"
           class="bg-white rounded-lg p-4 flex items-start gap-4 shadow-sm hover:shadow-md hover:bg-gray-50 transition-all duration-200"
         >
           <div
@@ -136,13 +139,13 @@
             </div>
           </div>
         </div>
+        }
       </div>
+      }
 
       <!-- No Comments  -->
-      <div
-        *ngIf="!isLoading && !error && (!comments || comments.length === 0)"
-        class="bg-gray-50 rounded-lg p-6 text-center shadow-sm"
-      >
+      @if (!isLoading && !error && (!comments || comments.length === 0)) {
+      <div class="bg-gray-50 rounded-lg p-6 text-center shadow-sm">
         <div class="flex flex-col items-center justify-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -162,6 +165,7 @@
           <p class="text-sm text-gray-600 mb-4">Import file to see comments</p>
         </div>
       </div>
+      }
     </section>
   </main>
 </div>

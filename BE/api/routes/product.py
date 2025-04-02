@@ -217,7 +217,7 @@ def get_product_ratings(decoded_token, product_id):
             'message': f'Server error: {str(e)}'
         }), 500
 
-@api_bp.route('/product/<int:product_id>/result/category-detail', methods=['GET'])
+@api_bp.route('/product/<int:product_id>/result/category-comments', methods=['GET'])
 @jwt_required()
 def get_product_sentiment_by_category_detail(decoded_token, product_id):
     try:

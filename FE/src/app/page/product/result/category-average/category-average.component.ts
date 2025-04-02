@@ -162,6 +162,19 @@ export class CategoryAverageComponent implements OnInit, AfterViewInit {
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        onClick: (event, elements) => {
+          if (elements.length > 0) {
+            const datasetIndex = elements[0].datasetIndex;
+            const dataIndex = elements[0].index;
+
+            const clickedLabel = this.chart?.data.labels?.[dataIndex] || '';
+            const clickedValue =
+              this.chart?.data.datasets?.[datasetIndex].data[dataIndex];
+
+            console.log(`Clicked on: ${clickedLabel}`);
+            console.log(`Sentiment Value: ${clickedValue}%`);
+          }
+        },
         plugins: {
           legend: {
             position: 'bottom',

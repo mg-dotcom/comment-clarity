@@ -77,7 +77,7 @@ export class CategoryComponent implements OnInit {
 
   navigateToCategory(category: string): void {
     this.router.navigate(
-      [`/product/${this.productId}/result/category-average`],
+      [`/product/${this.productId}/result/category-details`],
       {
         queryParams: { name: category },
       }

@@ -62,7 +62,7 @@ export const routes: Routes = [
           ),
       },
       {
-        path: ':productId/result/category-average',
+        path: ':productId/result/category-details',
         loadComponent: () =>
           import(
             './page/product/result/category-average/category-average.component'
