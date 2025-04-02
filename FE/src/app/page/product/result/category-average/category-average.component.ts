@@ -5,6 +5,7 @@ import {
   ElementRef,
   AfterViewInit,
 } from '@angular/core';
+import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { inject } from '@angular/core';
 import { ProductService } from '../../../../service/product/product.service';
@@ -45,13 +46,12 @@ export class CategoryAverageComponent implements OnInit, AfterViewInit {
 
   private productService = inject(ProductService);
 
-  constructor(private route: ActivatedRoute) {
+  constructor(private route: ActivatedRoute, private router: Router) {
     this.route.params.subscribe((params) => {
       this.productId = params['productId'];
-      this.categoryName =
-        params['categoryName'] ||
-        this.route.snapshot.queryParamMap.get('name') ||
-        '';
+      const encodedName = this.route.snapshot.queryParamMap.get('name');
+      const decodedName = encodedName ? decodeURIComponent(encodedName) : null;
+      this.categoryName = params['categoryName'] || decodedName || '';
     });
   }
 
@@ -163,16 +163,10 @@ export class CategoryAverageComponent implements OnInit, AfterViewInit {
         responsive: true,
         maintainAspectRatio: false,
         onClick: (event, elements) => {
-          if (elements.length > 0) {
-            const datasetIndex = elements[0].datasetIndex;
-            const dataIndex = elements[0].index;
-
-            const clickedLabel = this.chart?.data.labels?.[dataIndex] || '';
-            const clickedValue =
-              this.chart?.data.datasets?.[datasetIndex].data[dataIndex];
-
-            console.log(`Clicked on: ${clickedLabel}`);
-            console.log(`Sentiment Value: ${clickedValue}%`);
+          if (elements && elements.length > 0) {
+            const index = elements[0].index;
+            const sentiment = chartLabels[index].toLowerCase();
+            this.navigateToComments(sentiment);
           }
         },
         plugins: {
@@ -198,6 +192,16 @@ export class CategoryAverageComponent implements OnInit, AfterViewInit {
     });
   }
 
+  // Add this new method to handle navigation
+  navigateToComments(sentiment: string): void {
+    console.log('Navigating to comments for sentiment:', sentiment);
+    this.router.navigate(
+      [`/product/${this.productId}/result/category-comments`],
+      {
+        queryParams: { name: `${this.categoryName}` },
+      }
+    );
+  }
   getSentimentValue(key: string): number {
     if (!this.categoryAverages) return 0;
     return typeof this.categoryAverages[key as keyof ProductSentiment] ===

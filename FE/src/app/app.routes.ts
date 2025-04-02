@@ -68,6 +68,13 @@ export const routes: Routes = [
             './page/product/result/category-average/category-average.component'
           ).then((m) => m.CategoryAverageComponent),
       },
+      {
+        path: ':productId/result/category-comments',
+        loadComponent: () =>
+          import(
+            './page/product/result/category-comment/category-comments.component'
+          ).then((m) => m.CategoryCommentsComponent),
+      },
     ],
   },
 ];
