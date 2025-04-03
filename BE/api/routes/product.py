@@ -222,45 +222,47 @@ def get_product_ratings(decoded_token, product_id):
 def get_product_sentiment_by_category_detail(decoded_token, product_id):
     try:
         category_name = request.args.get('name', '').strip()
-        
+        sentiment_filter = request.args.get('sentiment', '').strip().lower() or None
+
         valid_categories = ['product', 'delivery', 'service', 'other']
+        valid_sentiments = ['positive', 'negative', 'neutral', 'none']
+
         if not category_name or category_name.lower() not in valid_categories:
             return jsonify({
                 'success': False,
                 'message': f'Invalid category. Valid categories are: {", ".join(valid_categories)}'
             }), 400
-        
+
+        if sentiment_filter and sentiment_filter not in valid_sentiments:
+            return jsonify({
+                'success': False,
+                'message': f'Invalid sentiment. Valid sentiments are: {", ".join(valid_sentiments)}'
+            }), 400
+
         product, product_error = Product.get_by_id(product_id)
-        
+
         if product_error:
-            return jsonify({
-                'success': False,
-                'message': product_error
-            }), 500
-        
+            return jsonify({'success': False, 'message': product_error}), 500
+
         if not product:
-            return jsonify({
-                'success': False,
-                'message': 'Product not found'
-            }), 404
+            return jsonify({'success': False, 'message': 'Product not found'}), 404
 
         user_id = decoded_token['sub']
-        sentiment_data, error = Comment.get_sentiment_by_category_detail(product_id, category_name, user_id)
-        
+        sentiment_data, error = Comment.get_sentiment_by_category_detail(product_id, category_name, user_id, sentiment_filter)
+
         if error:
-            return jsonify({
-                'success': False,
-                'message': error
-            }), 500
-        
-        return jsonify({
-            'success': True,
-            'data': sentiment_data
-        }), 200
-    
+            return jsonify({'success': False, 'message': error}), 500
+
+        if sentiment_filter is None:
+            all_comments = []
+            for sentiment in sentiment_data.values():
+                all_comments.extend(sentiment.get("comments", []))
+            
+            sentiment_data = {"comments": all_comments}
+
+        return jsonify({'success': True, 'data': sentiment_data}), 200
+
     except Exception as e:
-        logging.error(f"Error in get_product_sentiment_by_category: {str(e)}")
-        return jsonify({
-            'success': False,
-            'message': f'Server error: {str(e)}'
-        }), 500
+        logging.error(f"Error in get_product_sentiment_by_category_detail: {str(e)}")
+        return jsonify({'success': False, 'message': f'Server error: {str(e)}'}), 500
+

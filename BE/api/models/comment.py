@@ -257,10 +257,10 @@ class Comment:
             return None, str(e)
 
     @staticmethod
-    def get_sentiment_by_category_detail(product_id, category_name, user_id):
+    def get_sentiment_by_category_detail(product_id, category_name, user_id, sentiment_filter=None):
         try:
             cursor = mysql.connection.cursor()
-            
+
             query = """
                 SELECT 
                     c.commentId,
@@ -278,38 +278,29 @@ class Comment:
                 AND c.userId = %s
             """
             params = [product_id, category_name, user_id]
-            
+
+            if sentiment_filter:
+                query += " AND LOWER(sa.sentimentType) = LOWER(%s)"
+                params.append(sentiment_filter)
+
             cursor.execute(query, tuple(params))
             comments = cursor.fetchall()
             cursor.close()
-            
-            result = {
-                "positive": {"comments": []},
-                "negative": {"comments": []},
-                "neutral": {"comments": []},
-                "none": {"comments": []}
-            }
+
+            result = {sentiment_filter: {"comments": []}}
 
             for comment in comments:
-                commentId = comment[0]
-                ratings = comment[1]
-                text = comment[2]
-                date = comment[3]
-                userName = comment[4]
-                sentimentType = comment[5].lower() if comment[5] else 'none'
-                
                 comment_obj = {
-                    "commentId": commentId,
-                    "ratings": ratings,
-                    "text": text,
-                    "date": date.strftime('%Y-%m-%d'),
-                    "userName": userName
+                    "commentId": comment[0],
+                    "ratings": comment[1],
+                    "text": comment[2],
+                    "date": comment[3].strftime('%Y-%m-%d'),
+                    "userName": comment[4]
                 }
-                
-                if sentimentType in result:
-                    result[sentimentType]["comments"].append(comment_obj)
-            
+
+                result[sentiment_filter]["comments"].append(comment_obj)
+
             return result, None
-            
+
         except Exception as e:
             return None, str(e)

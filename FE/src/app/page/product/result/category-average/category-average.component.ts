@@ -196,9 +196,9 @@ export class CategoryAverageComponent implements OnInit, AfterViewInit {
   navigateToComments(sentiment: string): void {
     console.log('Navigating to comments for sentiment:', sentiment);
     this.router.navigate(
-      [`/product/${this.productId}/result/category-comments`],
+      [`/product/${this.productId}/result/category-details/comments`],
       {
-        queryParams: { name: `${this.categoryName}` },
+        queryParams: { name: `${this.categoryName}`, sentiment: sentiment },
       }
     );
   }

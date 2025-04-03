@@ -69,7 +69,7 @@ export const routes: Routes = [
           ).then((m) => m.CategoryAverageComponent),
       },
       {
-        path: ':productId/result/category-comments',
+        path: ':productId/result/category-details/comments',
         loadComponent: () =>
           import(
             './page/product/result/category-comment/category-comments.component'
