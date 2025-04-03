@@ -49,9 +49,10 @@ export class CategoryAverageComponent implements OnInit, AfterViewInit {
   constructor(private route: ActivatedRoute, private router: Router) {
     this.route.params.subscribe((params) => {
       this.productId = params['productId'];
-      const encodedName = this.route.snapshot.queryParamMap.get('name');
-      const decodedName = encodedName ? decodeURIComponent(encodedName) : null;
-      this.categoryName = params['categoryName'] || decodedName || '';
+    });
+
+    this.route.queryParamMap.subscribe(queryParams => {
+      this.categoryName = queryParams.get('name') || '';
     });
   }
 
@@ -192,7 +193,6 @@ export class CategoryAverageComponent implements OnInit, AfterViewInit {
     });
   }
 
-  // Add this new method to handle navigation
   navigateToComments(sentiment: string): void {
     console.log('Navigating to comments for sentiment:', sentiment);
     this.router.navigate(
