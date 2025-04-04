@@ -186,4 +186,38 @@ export class ProductService {
 
     return response.json();
   }
+
+  async getProductCategoryCommentsSentiment(
+    productId: string,
+    categoryName: string,
+    sentiment: string
+  ): Promise<ProductSentimentResponse> {
+    const accessToken = await this.authService.getToken();
+
+    if (!accessToken) {
+      this.router.navigate(['/login']);
+      throw new Error('Access token not found');
+    }
+
+    let url = `${this.apiUrl}/product/${productId}/result/category-comments`;
+    if (categoryName) {
+      url += `?name=${encodeURIComponent(categoryName)}`;
+    }
+    if (sentiment) {
+      url += `&sentiment=${encodeURIComponent(sentiment)}`;
+    }
+
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch product category comments sentiment');
+    }
+
+    return response.json();
+  }
 }

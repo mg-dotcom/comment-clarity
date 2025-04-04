@@ -40,12 +40,7 @@ export class AllCommentComponent implements OnInit {
         await this.productService.getProductWithAllComments(this.productId);
 
       if (response && response.data && response.data.length > 0) {
-        // Flatten the comments from the first product in the response
         this.comments = response.data[0].comments;
-
-        // Optional: Log additional product information if needed
-        console.log('Product Name:', response.data[0].productName);
-        console.log('Comments:', this.comments);
       } else {
         this.error = 'No comments found';
         this.comments = [];

@@ -34,8 +34,33 @@ export interface ProductSentiment {
 }
 
 export interface ProductSentimentResponse {
+  message: string;
   data: {
     product: ProductSentiment;
   };
+  success: boolean;
+}
+
+export interface CommentCategorySentiment {
+  commentId: number;
+  date: string;
+  ratings: number;
+  text: string;
+  userName: string;
+}
+
+export interface SentimentComments {
+  comments: CommentCategorySentiment[];
+}
+
+export interface ProductSentimentCommentsData {
+  positive?: SentimentComments;
+  negative?: SentimentComments;
+  neutral?: SentimentComments;
+  none?: SentimentComments;
+}
+
+export interface ProductSentimentCommentsResponse {
+  data: ProductSentimentCommentsData;
   success: boolean;
 }
