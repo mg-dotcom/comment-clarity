@@ -2,106 +2,148 @@
   <main class="p-4 sm:p-8 flex flex-col flex-grow h-full">
     <!-- Loading -->
     @if (isLoading) {
-      <div class="flex flex-col items-center justify-center py-10">
-        <div class="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
-        <p class="mt-4 text-gray-600 font-medium">Loading categories...</p>
-      </div>
+    <div class="flex flex-col items-center justify-center py-10">
+      <div
+        class="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"
+      ></div>
+      <p class="mt-4 text-gray-600 font-medium">Loading categories...</p>
+    </div>
     }
 
     <!-- Error Message -->
     @if (error) {
-      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-        <p>{{ error }}</p>
+    <div
+      class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"
+    >
+      <p>{{ error }}</p>
+    </div>
+    } @if (!isLoading && !error) {
+    <!-- Header Section -->
+    <section class="header-result flex-1">
+      <h1
+        class="text-3xl sm:text-4xl font-bold text-gray-900 mb-10 text-center"
+      >
+        <span
+          class="bg-gradient-to-r from-gray-900 to-gray-800 text-transparent bg-clip-text"
+        >
+          RESULT
+        </span>
+      </h1>
+
+      <!-- Tabs Section -->
+      <div
+        class="flex rounded-full overflow-hidden border border-gray-200 mb-8 max-w-sm mx-auto transition-all duration-300 ease-in-out"
+      >
+        <button
+          [ngClass]="{
+            'bg-purple-200': activeTab === 'category',
+            'bg-white': activeTab !== 'category'
+          }"
+          (click)="setActiveTab('category')"
+          class="flex-1 py-3 px-6 flex items-center justify-center text-sm transition-colors duration-300 ease-in-out"
+        >
+          @if (activeTab === 'category') {
+          <svg
+            class="w-4 h-4 mr-2 transition-transform duration-300 ease-in-out"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <path
+              d="M5 12l5 5L20 7"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            ></path>
+          </svg>
+          } Category
+        </button>
+
+        <button
+          [ngClass]="{
+            'bg-purple-200': activeTab === 'review',
+            'bg-white': activeTab !== 'review'
+          }"
+          (click)="setActiveTab('review')"
+          class="flex-1 py-3 px-6 flex items-center justify-center text-sm transition-colors duration-300 ease-in-out"
+        >
+          @if (activeTab === 'review') {
+          <svg
+            class="w-4 h-4 mr-2 transition-transform duration-300 ease-in-out"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <path
+              d="M5 12l5 5L20 7"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            ></path>
+          </svg>
+          } Review
+        </button>
       </div>
-    }
+    </section>
 
-    @if (!isLoading && !error) {
-      <!-- Header Section -->
-      <section class="header-result flex-1">
-        <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-10 text-center">
-          <span class="bg-gradient-to-r from-gray-900 to-gray-800 text-transparent bg-clip-text">
-            RESULT
+    <!-- Rating Section -->
+    @if (activeTab === 'category') {
+    <section class="mb-10">
+      <div class="flex flex-wrap justify-center gap-8 sm:gap-10 text-sm">
+        @for (rating of ratings; track rating) {
+        <div class="flex items-center mb-2">
+          <span
+            class="bg-pink-200 text-xs font-bold rounded-full w-8 h-8 flex items-center justify-center mr-2"
+          >
+            {{ rating.score }}
           </span>
-        </h1>
-
-        <!-- Tabs Section -->
-        <div class="flex rounded-full overflow-hidden border border-gray-200 mb-8 max-w-sm mx-auto transition-all duration-300 ease-in-out">
-          <button
-            [ngClass]="{
-              'bg-purple-200': activeTab === 'category',
-              'bg-white': activeTab !== 'category'
-            }"
-            (click)="setActiveTab('category')"
-            class="flex-1 py-3 px-6 flex items-center justify-center text-sm transition-colors duration-300 ease-in-out"
-          >
-            @if (activeTab === 'category') {
-              <svg class="w-4 h-4 mr-2 transition-transform duration-300 ease-in-out" viewBox="0 0 24 24" fill="none">
-                <path d="M5 12l5 5L20 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
-              </svg>
-            }
-            Category
-          </button>
-
-          <button
-            [ngClass]="{
-              'bg-purple-200': activeTab === 'review',
-              'bg-white': activeTab !== 'review'
-            }"
-            (click)="setActiveTab('review')"
-            class="flex-1 py-3 px-6 flex items-center justify-center text-sm transition-colors duration-300 ease-in-out"
-          >
-            @if (activeTab === 'review') {
-              <svg class="w-4 h-4 mr-2 transition-transform duration-300 ease-in-out" viewBox="0 0 24 24" fill="none">
-                <path d="M5 12l5 5L20 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
-              </svg>
-            }
-            Review
-          </button>
-        </div>
-
-        <!-- Rating Section -->
-        <div class="mb-10 flex flex-wrap justify-center gap-8 sm:gap-10 text-sm">
-          @for (rating of ratings; track rating) {
-            <div class="flex items-center mb-2">
-              <span class="bg-pink-200 text-xs font-bold rounded-full w-8 h-8 flex items-center justify-center mr-2">
-                {{ rating.score }}
-              </span>
-              <div class="flex text-yellow-400">
-                @for (star of [1, 2, 3, 4, 5]; track star) {
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-4 w-4"
-                    [class]="star <= rating.score ? 'text-yellow-400 fill-current' : 'text-gray-300 fill-current'"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                }
-              </div>
-              <span class="text-pink-400 text-xs ml-2">{{ rating.comments }} comments</span>
-            </div>
-          }
-        </div>
-      </section>
-
-      <!-- Categories Section -->
-      <section class="mt-auto">
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          @for (category of categories; track category) {
-            <div
-              class="rounded-lg overflow-hidden shadow-sm transition-all duration-200 hover:shadow-md hover:scale-102 cursor-pointer"
-              (click)="navigateToCategory(category.name.toLocaleLowerCase())"
+          <div class="flex">
+            @for (star of [1, 2, 3, 4, 5]; track star) {
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4"
+              [ngClass]="{
+                'text-yellow-400 fill-yellow-400': star <= rating.score,
+                'text-gray-300 fill-gray-300': star > rating.score
+              }"
+              viewBox="0 0 20 20"
             >
-              <div class="bg-white p-4 flex justify-center items-center h-60">
-                <img [src]="category.image" [alt]="category.name" class="max-h-full object-contain" />
-              </div>
-              <div class="p-3 flex justify-center items-center bg-card-bg h-12">
-                <h3 class="font-medium text-base">{{ category.name }}</h3>
-              </div>
-            </div>
-          }
+              <path
+                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+              />
+            </svg>
+            }
+          </div>
+          <span class="text-pink-400 text-xs ml-2"
+            >{{ rating.comments }} comments</span
+          >
         </div>
-      </section>
-    }
+        }
+      </div>
+    </section>
+    <section class="mt-auto">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        @for (category of categories; track category) {
+        <div
+          class="rounded-lg overflow-hidden shadow-sm transition-all duration-200 hover:shadow-md hover:scale-105 cursor-pointer"
+          (click)="navigateToCategory(category.name.toLowerCase())"
+        >
+          <div class="bg-white p-4 flex justify-center items-center h-60">
+            <img
+              [src]="category.image"
+              [alt]="category.name"
+              class="max-h-full object-contain"
+            />
+          </div>
+          <div class="p-3 flex justify-center items-center bg-card-bg h-12">
+            <h3 class="font-medium text-base">{{ category.name }}</h3>
+          </div>
+        </div>
+        }
+      </div>
+    </section>
+    } @else if (activeTab === 'review') {
+    <div class="flex flex-col items-center justify-center py-10">
+      <p class="text-gray-600 font-medium">Review content goes here</p>
+    </div>
+    } }
   </main>
 </div>

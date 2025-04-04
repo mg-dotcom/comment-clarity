@@ -169,22 +169,33 @@ export class ProductService {
     }
 
     let url = `${this.apiUrl}/product/${productId}/result/category-average`;
-    if (categoryName) {
-      url += `?name=${encodeURIComponent(categoryName)}`;
+    if (categoryName && categoryName.trim() !== '') {
+      url += `?name=${encodeURIComponent(categoryName.trim())}`;
     }
 
-    const response = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-      },
-    });
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
 
-    if (!response.ok) {
-      throw new Error('Failed to fetch product category average');
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        throw new Error(
+          errorData?.message ||
+            `Failed to fetch product sentiment (${response.status})`
+        );
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('API request failed:', error);
+      throw error;
     }
-
-    return response.json();
   }
 
   async getProductCategoryCommentsSentiment(

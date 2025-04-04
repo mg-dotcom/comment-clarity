@@ -4,7 +4,8 @@ import { ProductService } from '../../../../service/product/product.service';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { inject } from '@angular/core';
-import { ProductRatings } from '../../../../model/product';
+import { RouterOutlet } from '@angular/router';
+import { CategorySentiment } from '../../../../model/product';
 
 @Component({
   selector: 'app-category',
@@ -19,6 +20,7 @@ export class CategoryComponent implements OnInit {
   private router = inject(Router);
 
   activeTab: 'category' | 'review' = 'category';
+  sentimentData: CategorySentiment | null = null;
   categories = [
     { name: 'Product', image: '/result-pic/product.png' },
     { name: 'Delivery', image: '/result-pic/delivery.png' },
@@ -33,6 +35,10 @@ export class CategoryComponent implements OnInit {
 
   setActiveTab(tab: 'category' | 'review'): void {
     this.activeTab = tab;
+
+    if (tab === 'review') {
+      console.log(this.sentimentData);
+    }
   }
 
   ngOnInit(): void {
@@ -41,6 +47,7 @@ export class CategoryComponent implements OnInit {
         this.productId = Number(params['productId']);
         this.loadProductRatings(this.productId);
       });
+      this.loadProductAverageSentiment(this.productId);
     } catch (error) {
       console.error('Error in ngOnInit:', error);
       this.error = 'Failed to initialize component';
@@ -70,6 +77,28 @@ export class CategoryComponent implements OnInit {
     } catch (error) {
       console.error('Error fetching product ratings:', error);
       this.error = 'Failed to load product ratings';
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  async loadProductAverageSentiment(productId: string | number): Promise<void> {
+    try {
+      this.isLoading = true;
+      this.error = null;
+
+      const response = await this.productService.getProductCategoryAverage(
+        productId.toString()
+      );
+
+      if (response && response.success && response.data) {
+        this.sentimentData = response.data;
+      } else {
+        this.sentimentData = {};
+      }
+    } catch (error) {
+      console.error('Error fetching product sentiment:', error);
+      this.error = 'Failed to load product sentiment';
     } finally {
       this.isLoading = false;
     }

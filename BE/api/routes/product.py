@@ -131,6 +131,7 @@ def get_product_with_comments(decoded_token, product_id):
 @jwt_required()
 def get_product_sentiment_by_category_average(decoded_token, product_id):
     try:
+        user_id = decoded_token['sub']
         category_name = request.args.get('name', '').strip()
 
         if category_name:
@@ -140,6 +141,13 @@ def get_product_sentiment_by_category_average(decoded_token, product_id):
                     'success': False,
                     'message': f'Invalid category. Valid categories are: {", ".join(valid_categories)}'
                 }), 400
+            
+        else:
+            categories = Comment.get_sentiment_by_all_category(product_id,user_id)
+            return jsonify({
+                'success': True,
+                'data': categories
+            }), 200
         
         product, product_error = Product.get_by_id(product_id)
         
@@ -155,7 +163,7 @@ def get_product_sentiment_by_category_average(decoded_token, product_id):
                 'message': 'Product not found'
             }), 404
 
-        user_id = decoded_token['sub']
+        
         categories, error = Comment.get_sentiment_by_category(product_id, category_name, user_id)
         
         if error:

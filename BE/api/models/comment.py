@@ -211,6 +211,56 @@ class Comment:
             
         except Exception as e:
             return None, str(e)
+        
+    @staticmethod
+    def get_sentiment_by_all_category(product_id, user_id=None):
+        try:
+            cursor = mysql.connection.cursor()
+
+            query = """
+                SELECT 
+                    sa.sentimentType,
+                    COUNT(*) as count
+                FROM comments c
+                JOIN sentimentanalysis sa ON c.sentimentId = sa.sentimentId
+                WHERE c.productId = %s
+            """
+            
+            params = [product_id]
+            
+            if user_id is not None:
+                query += " AND c.userId = %s"
+                params.append(user_id)
+            
+            query += " GROUP BY sa.sentimentType"
+            
+            cursor.execute(query, tuple(params))
+            
+            results = cursor.fetchall()
+            
+            cursor.close()
+            
+            sentiments = {
+                "positive (%)": 0.0,
+                "negative (%)": 0.0,
+                "neutral (%)": 0.0,
+                "none (%)": 0.0
+            }
+            
+            total_comments = sum(row[1] for row in results)
+            
+            if total_comments > 0:
+                for row in results:
+                    sentiment = row[0].lower() if row[0] else "none"
+                    count = row[1]
+                    percentage = round((count / total_comments) * 100, 1)
+                    print(f"Debug: Processing sentiment '{sentiment}': {count}/{total_comments} = {percentage}%")
+                    sentiments[f"{sentiment} (%)"] = percentage
+            
+            return sentiments
+        except Exception as e:
+            error_msg = str(e)
+            return None, error_msg
 
     @staticmethod
     def get_ratings_by_product(product_id, user_id=None):

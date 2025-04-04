@@ -27,18 +27,20 @@ export interface ProductRatingResponse {
 }
 
 export interface ProductSentiment {
+  'positive (%)': number;
   'negative (%)': number;
   'neutral (%)': number;
   'none (%)': number;
-  'positive (%)': number;
+}
+
+export interface CategorySentiment {
+  [category: string]: ProductSentiment;
 }
 
 export interface ProductSentimentResponse {
-  message: string;
-  data: {
-    product: ProductSentiment;
-  };
   success: boolean;
+  data: CategorySentiment;
+  message?: string;
 }
 
 export interface CommentCategorySentiment {
