@@ -202,6 +202,7 @@ export class CategoryAverageComponent implements OnInit, AfterViewInit {
       }
     );
   }
+  
   getSentimentValue(key: string): number {
     if (!this.categoryAverages) return 0;
     return typeof this.categoryAverages[key as keyof ProductSentiment] ===
