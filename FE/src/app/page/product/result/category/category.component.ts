@@ -35,10 +35,6 @@ export class CategoryComponent implements OnInit {
 
   setActiveTab(tab: 'category' | 'review'): void {
     this.activeTab = tab;
-
-    if (tab === 'review') {
-      console.log(this.sentimentData);
-    }
   }
 
   ngOnInit(): void {
