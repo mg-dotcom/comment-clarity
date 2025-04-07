@@ -4,7 +4,7 @@ mysql_config = {
     'PORT': 3306,         
     'USER': 'root',
     'PASSWORD': 'momor123', # Change this to your MySQL password
-    'DATABASE': 'community_clarity_schema'
+    'DATABASE': 'comment_clarity_schema'
 }
 
 # Flask
