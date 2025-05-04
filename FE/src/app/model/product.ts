@@ -51,10 +51,6 @@ export const SentimentColors: { [key: string]: string } = {
   'positive (%)': '#4CAF50',
 };
 
-export interface CategorySentiment {
-  [category: string]: ProductSentiment;
-}
-
 export interface ProductSentimentResponse {
   success: boolean;
   data: ProductSentiment;

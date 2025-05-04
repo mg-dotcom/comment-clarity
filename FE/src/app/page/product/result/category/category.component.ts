@@ -28,7 +28,7 @@ export class CategoryComponent implements OnInit, AfterViewInit {
   router = inject(Router);
 
   sentimentData = this.store.sentimentData;
-  ratings = this.store.ratings; 
+  ratings = this.store.ratings;
   isLoading = this.store.loading;
   error = this.store.error;
 

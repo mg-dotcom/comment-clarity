@@ -15,13 +15,15 @@ import {
   DefaultSentiment,
   SentimentColors,
 } from '../../../../model/product';
+import { Router } from '@angular/router';
+import { inject } from '@angular/core';
 
 @Component({
   selector: 'app-pie-chart',
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="w-[350px] h-[350px] mx-auto">
+    <div class="w-[350px] h-[350px] mx-auto cursor-pointer">
       <canvas #pieCanvas></canvas>
     </div>
   `,
@@ -29,6 +31,10 @@ import {
 export class PieChartComponent implements AfterViewInit, OnDestroy, OnChanges {
   @ViewChild('pieCanvas') pieCanvas!: ElementRef<HTMLCanvasElement>;
   @Input() data: ProductSentiment = DefaultSentiment;
+  @Input() productId: number = 0;
+  @Input() categoryName: string = '';
+
+  router = inject(Router);
   sentimentColors: { [key: string]: string } = SentimentColors;
   chart: Chart | null = null;
   isViewInitialized = false;
@@ -61,7 +67,7 @@ export class PieChartComponent implements AfterViewInit, OnDestroy, OnChanges {
       const mainLabel = label.split(' ')[0];
       return mainLabel.charAt(0).toUpperCase() + mainLabel.slice(1);
     });
-    
+
     const chartData = labels.map(
       (key) => this.data[key as keyof ProductSentiment]
     );
@@ -84,6 +90,13 @@ export class PieChartComponent implements AfterViewInit, OnDestroy, OnChanges {
       },
       options: {
         responsive: true,
+        onClick: (event, elements) => {
+          if (elements && elements.length > 0) {
+            const index = elements[0].index;
+            const sentiment = labels[index].split(' ')[0].toLowerCase();
+            this.navigateToComments(sentiment);
+          }
+        },
         plugins: {
           legend: {
             position: 'bottom',
@@ -100,5 +113,16 @@ export class PieChartComponent implements AfterViewInit, OnDestroy, OnChanges {
         },
       },
     });
+  }
+
+  navigateToComments(sentiment: string): void {
+    if (this.categoryName) {
+      this.router.navigate(
+        [`/product/${this.productId}/result/category-details/comments`],
+        {
+          queryParams: { name: `${this.categoryName}`, sentiment: sentiment },
+        }
+      );
+    }
   }
 }

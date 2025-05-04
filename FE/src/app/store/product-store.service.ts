@@ -122,17 +122,55 @@ export class ProductStoreService {
     }
   }
 
-  async loadProductAverageSentiment(productId: number): Promise<void> {
+  async loadProductAverageSentiment(
+    productId: number,
+    categoryName?: string
+  ): Promise<void> {
     this._loading.set(true);
     this._error.set(null);
     try {
       const response = await this.productService.getProductCategoryAverage(
-        productId
+        productId,
+        categoryName
       );
-
       if (response && response.success) {
         const data = response.data;
-        this._sentimentData.set(data);
+
+        // ตรวจสอบรูปแบบข้อมูลที่ได้รับ
+        if (categoryName && typeof data === 'object' && data !== null) {
+          // กรณีมี categoryName จะได้รับข้อมูลในรูปแบบ { "product": { ... } }
+          const categoryData = data[categoryName];
+          if (
+            categoryData &&
+            typeof categoryData === 'object' &&
+            'positive (%)' in categoryData
+          ) {
+            this._sentimentData.set(categoryData);
+            console.log(
+              'Sentiment data for category:',
+              categoryName,
+              categoryData
+            );
+          } else {
+            this._sentimentData.set(null);
+            this._error.set(
+              `Invalid data format for category: ${categoryName}`
+            );
+          }
+        } else {
+          // กรณีไม่มี categoryName จะได้รับข้อมูลในรูปแบบ { "negative (%)": 0, ... }
+          if (
+            typeof data === 'object' &&
+            data !== null &&
+            'positive (%)' in data
+          ) {
+            this._sentimentData.set(data as ProductSentiment);
+            console.log('Sentiment data:', data);
+          } else {
+            this._sentimentData.set(null);
+            this._error.set('Invalid data format');
+          }
+        }
       } else {
         this._sentimentData.set(null);
         this._error.set('No product found');
@@ -144,7 +182,6 @@ export class ProductStoreService {
       this._loading.set(false);
     }
   }
-
   clear() {
     this._products.set([]);
     this._loading.set(false);

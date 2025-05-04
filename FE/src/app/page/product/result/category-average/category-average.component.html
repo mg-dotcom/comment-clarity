@@ -4,14 +4,14 @@
       {{ categoryName.toUpperCase() }}
     </h1>
     <section class="mb-6 sm:mb-8 lg:mb-10">
-      @if (isLoading) {
+      @if (isLoading()) {
       <div class="flex flex-col items-center justify-center py-10">
         <div
           class="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"
         ></div>
         <p class="mt-4 text-gray-600 font-medium">Loading sentiment data...</p>
       </div>
-      } @else if (error) {
+      } @else if (error()) {
       <div
         class="mb-6 bg-red-50 flex items-center justify-center gap-4 rounded-lg p-6 text-center shadow-sm"
         id="errorState"
@@ -44,9 +44,7 @@
               try again later.
             </p>
             <button
-              (click)="
-                loadProductCategoryAverage(this.productId, this.categoryName)
-              "
+              (click)="refreshProductCategoryAverage()"
               class="mt-2 text-sm bg-red-100 hover:bg-red-200 text-red-800 px-3 py-1 rounded-md transition-colors duration-200"
             >
               Try Again
@@ -110,9 +108,11 @@
         </h2>
 
         <!-- Pie Chart -->
-        <div class="h-64 sm:h-72 md:h-80 lg:h-96">
-          <canvas #pieChart></canvas>
-        </div>
+        <app-pie-chart
+          [productId]="productId"
+          [categoryName]="categoryName"
+          [data]="sentimentData()"
+        ></app-pie-chart>
 
         <!-- Data Table -->
         <div
@@ -135,7 +135,7 @@
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-              @if (getSentimentValue('Negative') > 0) {
+              @if (getSentimentValue('negative (%)') > 0) {
               <tr>
                 <td
                   class="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-medium flex items-center"
@@ -149,10 +149,10 @@
                 <td
                   class="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500"
                 >
-                  {{ formatValue(getSentimentValue("Negative")) }}%
+                  {{ formatValue(getSentimentValue("negative (%)")) }}%
                 </td>
               </tr>
-              } @if (getSentimentValue('Neutral') > 0) {
+              } @if (getSentimentValue('neutral (%)') > 0) {
               <tr>
                 <td
                   class="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-medium flex items-center"
@@ -166,10 +166,10 @@
                 <td
                   class="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500"
                 >
-                  {{ formatValue(getSentimentValue("Neutral")) }}%
+                  {{ formatValue(getSentimentValue("neutral (%)")) }}%
                 </td>
               </tr>
-              } @if (getSentimentValue('None') > 0) {
+              } @if (getSentimentValue('none (%)') > 0) {
               <tr>
                 <td
                   class="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-medium flex items-center"
@@ -183,10 +183,10 @@
                 <td
                   class="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500"
                 >
-                  {{ formatValue(getSentimentValue("None")) }}%
+                  {{ formatValue(getSentimentValue("none (%)")) }}%
                 </td>
               </tr>
-              } @if (getSentimentValue('Positive') > 0) {
+              } @if (getSentimentValue('positive (%)') > 0) {
               <tr>
                 <td
                   class="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-medium flex items-center"
@@ -200,7 +200,7 @@
                 <td
                   class="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500"
                 >
-                  {{ formatValue(getSentimentValue("Positive")) }}%
+                  {{ formatValue(getSentimentValue("positive (%)")) }}%
                 </td>
               </tr>
               }
