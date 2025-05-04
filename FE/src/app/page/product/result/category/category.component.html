@@ -1,7 +1,7 @@
 <div class="w-full">
   <main class="p-4 sm:p-8 flex flex-col flex-grow h-full">
     <!-- Loading -->
-    @if (isLoading) {
+    @if (isLoading()) {
     <div class="flex flex-col items-center justify-center py-10">
       <div
         class="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"
@@ -11,7 +11,7 @@
     }
 
     <!-- Error Message -->
-    @if (error) {
+    @if (error()) {
     <div
       class="mb-6 bg-red-50 flex items-center justify-center gap-4 rounded-lg p-6 text-center shadow-sm"
       id="errorState"
@@ -41,7 +41,7 @@
             An error occurred while loading categories. Please try again later.
           </p>
           <button
-            (click)="loadProductRatings(this.productId)"
+            (click)="refreshProductRatings()"
             class="mt-2 text-sm bg-red-100 hover:bg-red-200 text-red-800 px-3 py-1 rounded-md transition-colors duration-200"
           >
             Try Again
@@ -49,7 +49,7 @@
         </div>
       </div>
     </div>
-    } @if (!isLoading && !error) {
+    } @if (!isLoading() && !error()) {
     <!-- Header Section -->
     <section class="header-result flex-1">
       <h1
@@ -120,7 +120,7 @@
     @if (activeTab === 'category') {
     <section class="mb-10">
       <div class="flex flex-wrap justify-center gap-8 sm:gap-10 text-sm">
-        @for (rating of ratings; track rating) {
+        @for (rating of ratings(); track rating) {
         <div class="flex items-center mb-2">
           <span
             class="bg-pink-200 text-xs font-bold rounded-full w-8 h-8 flex items-center justify-center mr-2"
@@ -180,13 +180,12 @@
         Sentiment Distribution
       </h2>
 
-      <!-- Pie Chart -->
-      <div class="h-64 sm:h-72 md:h-80 lg:h-96">
-        <canvas #pieChart></canvas>
-      </div>
+      <app-pie-chart
+        *ngIf="activeTab === 'review'"
+        [data]="sentimentData()"
+      ></app-pie-chart>
 
-      <!-- Data Table -->
-      <div class="mt-4 sm:mt-6 lg:mt-8 overflow-x-auto" *ngIf="sentimentData">
+      <div class="mt-4 sm:mt-6 lg:mt-8 overflow-x-auto" *ngIf="sentimentData()">
         <table class="min-w-full bg-white divide-y divide-gray-200">
           <thead>
             <tr>

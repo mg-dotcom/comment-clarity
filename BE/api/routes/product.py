@@ -34,7 +34,7 @@ def get_all_products(decoded_token):
 # สร้าง API สำหรับดึงข้อมูลสินค้าจากตาราง products ของ user ท
 @api_bp.route('/product', methods=['GET'])
 @jwt_required
-def get_current_user_products(decoded_token):  # Renamed function
+def get_current_user_products(decoded_token): 
     try:
         user_id = decoded_token['sub']
         products, error = Product.get_user_products(user_id)
@@ -56,11 +56,13 @@ def get_current_user_products(decoded_token):  # Renamed function
             'message': f'Server error: {str(e)}'
         }), 500
     
+# สร้าง API สำหรับดึงข้อมูลจากตาราง products โดยระบุ product_id
 @api_bp.route('/product/<int:product_id>', methods=['GET'])
 @jwt_required
-def get_product_by_id(decoded_token, product_id):
+def get_by_id_and_user(decoded_token, product_id):
     try:
-        product, error = Product.get_by_id(product_id)
+        user_id = decoded_token['sub']
+        product, error = Product.get_by_id(product_id, user_id)
         
         if error:
             return jsonify({
@@ -85,12 +87,13 @@ def get_product_by_id(decoded_token, product_id):
             'message': f'Server error: {str(e)}'
         }), 500
 
+# สร้าง API สำหรับดึงข้อมูลจากตาราง products โดยระบุ product_id และแสดง comment ของ user
 @api_bp.route('/product/<int:product_id>/with-comments', methods=['GET'], endpoint='get_product_with_comments')
 @jwt_required
 def get_product_with_comments(decoded_token, product_id):
     try:
-        # Get the specific product
-        product, product_error = Product.get_by_id(product_id)
+        user_id = decoded_token['sub']
+        product, product_error = Product.get_by_id(product_id, user_id)
         
         if product_error:
             return jsonify({
@@ -104,20 +107,17 @@ def get_product_with_comments(decoded_token, product_id):
                 'message': 'Product not found'
             }), 404
         
-        # Get comments for this product
-        user_id = decoded_token['sub']
         comments, comment_error = Comment.get_by_product_id(product_id, user_id)
         
         if comment_error:
             logging.error(f"Error fetching comments for product {product_id}: {comment_error}")
             comments = []
-        
-        # Add comments to product data
+
         product['comments'] = comments
         
         return jsonify({
             'status': 'success',
-            'data': [product]  # Wrap in array to match desired structure
+            'data': [product] 
         }), 200
     
     except Exception as e:
@@ -127,6 +127,7 @@ def get_product_with_comments(decoded_token, product_id):
             'message': f'Server error: {str(e)}'
         }), 500
 
+# สร้าง API สำหรับดึงข้อมูลจากตาราง products โดยระบุ product_id และแสดง result ของ category comment average
 @api_bp.route('/product/<int:product_id>/result/category-average', methods=['GET'])
 @jwt_required()
 def get_product_sentiment_by_category_average(decoded_token, product_id):
@@ -149,7 +150,7 @@ def get_product_sentiment_by_category_average(decoded_token, product_id):
                 'data': categories
             }), 200
         
-        product, product_error = Product.get_by_id(product_id)
+        product, product_error = Product.get_by_id(product_id, user_id)
         
         if product_error:
             return jsonify({
@@ -184,11 +185,13 @@ def get_product_sentiment_by_category_average(decoded_token, product_id):
             'message': f'Server error: {str(e)}'
         }), 500
 
+# สร้าง API สำหรับดึงข้อมูลจากตาราง products โดยระบุ product_id และแสดง comment rating
 @api_bp.route('/product/<int:product_id>/ratings', methods=['GET'])
 @jwt_required()
 def get_product_ratings(decoded_token, product_id):
     try:
-        product, product_error = Product.get_by_id(product_id)
+        user_id = decoded_token['sub']
+        product, product_error = Product.get_by_id(product_id, user_id)
         
         if product_error:
             return jsonify({
@@ -225,6 +228,7 @@ def get_product_ratings(decoded_token, product_id):
             'message': f'Server error: {str(e)}'
         }), 500
 
+# สร้าง API สำหรับดึงข้อมูลจากตาราง products โดยระบุ product_id และแสดง result ของ category comment detail
 @api_bp.route('/product/<int:product_id>/result/category-comments', methods=['GET'])
 @jwt_required()
 def get_product_sentiment_by_category_detail(decoded_token, product_id):
@@ -246,8 +250,9 @@ def get_product_sentiment_by_category_detail(decoded_token, product_id):
                 'success': False,
                 'message': f'Invalid sentiment. Valid sentiments are: {", ".join(valid_sentiments)}'
             }), 400
-
-        product, product_error = Product.get_by_id(product_id)
+        
+        user_id = decoded_token['sub']
+        product, product_error = Product.get_by_id(product_id, user_id)
 
         if product_error:
             return jsonify({'success': False, 'message': product_error}), 500
@@ -255,7 +260,7 @@ def get_product_sentiment_by_category_detail(decoded_token, product_id):
         if not product:
             return jsonify({'success': False, 'message': 'Product not found'}), 404
 
-        user_id = decoded_token['sub']
+
         sentiment_data, error = Comment.get_sentiment_by_category_detail(product_id, category_name, user_id, sentiment_filter)
 
         if error:
@@ -274,3 +279,20 @@ def get_product_sentiment_by_category_detail(decoded_token, product_id):
         logging.error(f"Error in get_product_sentiment_by_category_detail: {str(e)}")
         return jsonify({'success': False, 'message': f'Server error: {str(e)}'}), 500
 
+@api_bp.route('/product/<int:product_id>', methods=['DELETE'])
+@jwt_required()
+def delete_user_product(decoded_token, product_id):
+    try:
+        user_id = decoded_token['sub']
+        success, message = Product.delete_user_product(user_id, product_id)
+        
+        if success:
+            return jsonify({'message': message}), 200
+        else:
+            return jsonify({'error': message}), 400
+    except Exception as e:
+        logging.error(f"Error in delete_user_product: {str(e)}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Server error: {str(e)}'
+        }), 500

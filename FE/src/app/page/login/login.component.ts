@@ -15,18 +15,18 @@ import { inject } from '@angular/core';
   providers: [AuthService],
 })
 export class LoginComponent {
-  private authService = inject(AuthService);
-  private productService = inject(ProductService);
+  router = inject(Router);
+  authService = inject(AuthService);
+  productService = inject(ProductService);
+  route = inject(ActivatedRoute);
+  fb = inject(FormBuilder);
+  
   loginForm: FormGroup;
   error: string = '';
   loading: boolean = false;
   showPassword: boolean = false;
 
-  constructor(
-    private fb: FormBuilder,
-    private router: Router,
-    private route: ActivatedRoute
-  ) {
+  constructor() {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
@@ -66,47 +66,4 @@ export class LoginComponent {
       this.loading = false;
     }
   }
-
-  // ถ้ามียังไม่มี Product List ให้ redirect ไปที่ firstProduct ของ User
-  // async onSubmit(): Promise<void> {
-  //   if (this.loginForm.invalid) {
-  //     this.error = 'Please fill in all required fields correctly.';
-  //     return;
-  //   }
-
-  //   this.loading = true;
-  //   const { email, password } = this.loginForm.value;
-
-  //   try {
-  //     const status = await this.authService.login(email, password);
-  //     if (status === 'success') {
-  //       if (this.route.snapshot.queryParams['returnUrl']) {
-  //         this.router.navigateByUrl(
-  //           this.route.snapshot.queryParams['returnUrl']
-  //         );
-  //         return;
-  //       }
-
-  //       try {
-  //         const firstProduct = await this.productService.getUserFirstProduct();
-
-  //         if (firstProduct && firstProduct.productId) {
-  //           // ถ้ามีสินค้า ให้ redirect ไปที่หน้ารายละเอียดของสินค้าแรก
-  //           this.router.navigate(['/product', firstProduct.productId]);
-  //         } else {
-  //           this.router.navigate(['/product']);
-  //         }
-  //       } catch (productErr) {
-  //         console.error('Error fetching user products:', productErr);
-  //         this.router.navigate(['/product']);
-  //       }
-  //     } else {
-  //       this.error = 'Invalid email or password';
-  //     }
-  //   } catch (err: any) {
-  //     this.error = err?.message || 'An error occurred during login';
-  //   } finally {
-  //     this.loading = false;
-  //   }
-  // }
 }

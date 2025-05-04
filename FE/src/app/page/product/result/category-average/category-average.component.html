@@ -117,7 +117,7 @@
         <!-- Data Table -->
         <div
           class="mt-4 sm:mt-6 lg:mt-8 overflow-x-auto"
-          *ngIf="categoryAverages"
+          *ngIf="sentimentData()"
         >
           <table class="min-w-full bg-white divide-y divide-gray-200">
             <thead>
@@ -135,7 +135,7 @@
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-              @if (getSentimentValue('negative (%)') > 0) {
+              @if (getSentimentValue('Negative') > 0) {
               <tr>
                 <td
                   class="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-medium flex items-center"
@@ -149,10 +149,10 @@
                 <td
                   class="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500"
                 >
-                  {{ formatValue(getSentimentValue("negative (%)")) }}%
+                  {{ formatValue(getSentimentValue("Negative")) }}%
                 </td>
               </tr>
-              } @if (getSentimentValue('neutral (%)') > 0) {
+              } @if (getSentimentValue('Neutral') > 0) {
               <tr>
                 <td
                   class="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-medium flex items-center"
@@ -166,10 +166,10 @@
                 <td
                   class="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500"
                 >
-                  {{ formatValue(getSentimentValue("neutral (%)")) }}%
+                  {{ formatValue(getSentimentValue("Neutral")) }}%
                 </td>
               </tr>
-              } @if (getSentimentValue('none (%)') > 0) {
+              } @if (getSentimentValue('None') > 0) {
               <tr>
                 <td
                   class="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-medium flex items-center"
@@ -183,10 +183,10 @@
                 <td
                   class="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500"
                 >
-                  {{ formatValue(getSentimentValue("none (%)")) }}%
+                  {{ formatValue(getSentimentValue("None")) }}%
                 </td>
               </tr>
-              } @if (getSentimentValue('positive (%)') > 0) {
+              } @if (getSentimentValue('Positive') > 0) {
               <tr>
                 <td
                   class="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-medium flex items-center"
@@ -200,7 +200,7 @@
                 <td
                   class="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500"
                 >
-                  {{ formatValue(getSentimentValue("positive (%)")) }}%
+                  {{ formatValue(getSentimentValue("Positive")) }}%
                 </td>
               </tr>
               }

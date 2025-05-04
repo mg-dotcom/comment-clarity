@@ -2,7 +2,7 @@
   <!-- Content -->
   <main class="p-4 sm:p-6">
     <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-8">
-      {{ currentProduct.productName }}
+      {{ product()?.productName }}
     </h1>
     <section class="mb-6 sm:mb-10">
       <div
@@ -47,9 +47,11 @@
           >
             <img
               src="/home-pic/comment.png"
+              width="85"
               alt="Comment"
               class="max-w-full max-h-full object-contain"
-              loading="lazy"
+              priority
+              fill
             />
           </div>
           <div class="p-2">
@@ -73,8 +75,8 @@
                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                   ></path>
                 </svg>
-                {{ currentProduct.startDate | date : "MMM, yyyy" }} -
-                {{ currentProduct.endDate | date : "MMM, yyyy" }}
+                {{ product()?.startDate | date : "MMM, yyyy" }} -
+                {{ product()?.endDate | date : "MMM, yyyy" }}
               </span>
             </div>
           </div>
@@ -92,7 +94,8 @@
               src="/home-pic/pie-chart.png"
               alt="Result Chart"
               class="max-w-full max-h-full object-contain"
-              loading="lazy"
+              priority
+              fill
             />
           </div>
           <div class="p-2">
@@ -115,8 +118,8 @@
                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                   ></path>
                 </svg>
-                {{ currentProduct.startDate | date : "MMM, yyyy" }} -
-                {{ currentProduct.endDate | date : "MMM, yyyy" }}
+                {{ product()?.startDate | date : "MMM, yyyy" }} -
+                {{ product()?.endDate | date : "MMM, yyyy" }}
               </span>
             </div>
           </div>

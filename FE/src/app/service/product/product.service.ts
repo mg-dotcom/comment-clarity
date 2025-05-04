@@ -14,14 +14,14 @@ import {
   providedIn: 'root',
 })
 export class ProductService {
-  private authService = inject(AuthService);
-  private apiUrl = environment.apiUrl;
+  router = inject(Router);
+  authService = inject(AuthService);
+  apiUrl = environment.apiUrl;
 
-  constructor(private router: Router) {}
+  constructor() {}
 
   async getAllProducts(): Promise<ProductResponse> {
     const accessToken = await this.authService.getToken();
-
     if (!accessToken) {
       this.router.navigate(['/login']);
       throw new Error('Access token not found');
@@ -35,6 +35,7 @@ export class ProductService {
     });
 
     if (!response.ok) {
+      this.router.navigate(['/product']);
       throw new Error('Failed to fetch products');
     }
 
@@ -42,7 +43,7 @@ export class ProductService {
   }
 
   async getProductWithAllComments(
-    productId: string
+    productId: number
   ): Promise<CommentsResponse> {
     const accessToken = await this.authService.getToken();
 
@@ -62,50 +63,12 @@ export class ProductService {
     );
 
     if (!response.ok) {
+      this.router.navigate(['/product']);
       throw new Error('Failed to fetch comments');
     }
 
     console.log('response:', response);
     return response.json();
-  }
-
-  async getUserFirstProduct(): Promise<any> {
-    try {
-      const userId = this.authService.getCurrentUserId();
-
-      if (!userId) {
-        throw new Error('User ID not found');
-      }
-
-      const accessToken = await this.authService.getToken();
-
-      if (!accessToken) {
-        this.router.navigate(['/login']);
-        throw new Error('Access token not found');
-      }
-
-      const response = await fetch(`${this.apiUrl}/users/firstProducts`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(
-          `Failed to fetch user products: ${response.statusText}`
-        );
-      }
-
-      const responseData = await response.json();
-
-      const firstProduct = responseData?.data[0] || null;
-
-      return firstProduct;
-    } catch (error) {
-      console.error('Error in getUserFirstProduct:', error);
-      throw error;
-    }
   }
 
   async getProdutById(productId: number): Promise<ProductResponse> {
@@ -124,6 +87,7 @@ export class ProductService {
     });
 
     if (!response.ok) {
+      this.router.navigate(['/product']);
       throw new Error('Failed to fetch product');
     }
 
@@ -131,7 +95,7 @@ export class ProductService {
   }
 
   async getProductCommentRating(
-    productId: string
+    productId: number
   ): Promise<ProductRatingResponse> {
     const accessToken = await this.authService.getToken();
 
@@ -151,6 +115,7 @@ export class ProductService {
     );
 
     if (!response.ok) {
+      this.router.navigate(['/product']);
       throw new Error('Failed to fetch product ratings');
     }
 
@@ -158,7 +123,7 @@ export class ProductService {
   }
 
   async getProductCategoryAverage(
-    productId: string,
+    productId: number,
     categoryName?: string
   ): Promise<ProductSentimentResponse> {
     const accessToken = await this.authService.getToken();
@@ -183,6 +148,7 @@ export class ProductService {
       });
 
       if (!response.ok) {
+        this.router.navigate(['/product']);
         const errorData = await response.json().catch(() => null);
         throw new Error(
           errorData?.message ||
@@ -226,6 +192,7 @@ export class ProductService {
     });
 
     if (!response.ok) {
+      this.router.navigate(['/product']);
       throw new Error('Failed to fetch product category comments sentiment');
     }
 

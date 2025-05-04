@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { OnInit } from '@angular/core';
 import { ProductService } from '../../../service/product/product.service';
-import { Product, ProductResponse } from '../../../model/product';
 import { CommonModule } from '@angular/common';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { ProductStoreService } from '../../../store/product-store.service';
 
 @Component({
   selector: 'app-product-list',
@@ -13,52 +13,25 @@ import { Router } from '@angular/router';
   styleUrl: './product-list.component.css',
 })
 export class ProductListComponent implements OnInit {
-  isLoading = false;
-  error: string | null = null;
-  private productService = inject(ProductService);
-  products: Product[] = [];
+  productService = inject(ProductService);
+  store = inject(ProductStoreService);
+  router = inject(Router);
 
-  constructor(private router: Router) {}
+  products = this.store.products;
+  isLoading = this.store.loading;
+  error = this.store.error;
+
+  constructor() {}
 
   goToProductDetail(productId: number): void {
     this.router.navigate(['/product', productId]);
   }
 
   ngOnInit() {
-    this.loadProducts();
+    this.store.loadProducts();
   }
 
-  async loadProducts(): Promise<void> {
-    this.isLoading = true;
-    this.error = null;
-
-    try {
-      const response: ProductResponse =
-        await this.productService.getAllProducts();
-
-      if (response?.status === 'success') {
-        if (response.data?.length > 0) {
-          this.products = response.data.map((item) => ({
-            productId: item.productId,
-            productName: item.productName,
-            startDate: item.startDate,
-            endDate: item.endDate,
-            createdAt: item.createdAt,
-          }));
-        } else {
-          this.products = [];
-        }
-      } else {
-        this.error = 'API returned unsuccessful status';
-        this.products = [];
-      }
-    } catch (err) {
-      console.error('Error fetching products:', err);
-      this.error =
-        err instanceof Error ? err.message : 'Failed to load products';
-      this.products = [];
-    } finally {
-      this.isLoading = false;
-    }
+  refreshProducts(): void {
+    this.store.loadProducts();
   }
 }

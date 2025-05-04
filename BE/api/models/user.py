@@ -88,10 +88,13 @@ class User:
             return False
         
     @staticmethod
-    def get_all():
+    def get_all(user_id=None):
         try:
             cursor = mysql.connection.cursor()
-            cursor.execute("SELECT userId, firstName, lastName, email FROM users")
+            cursor.execute("""
+                SELECT userId, firstName, lastName, email 
+                FROM users
+            """)
             users = cursor.fetchall()
             cursor.close()
             
@@ -106,8 +109,8 @@ class User:
             
             return user_list, None  
         except Exception as e:
-            print(f"Error getting all users: {str(e)}")
-            return None, str(e)  
+            print(f"Error getting users by user_id: {str(e)}")
+            return None, str(e)
         
     @staticmethod
     def get_by_id(user_id):

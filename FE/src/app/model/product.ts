@@ -7,10 +7,12 @@ export interface Product {
 }
 
 export interface ProductResponse {
+  response: Product;
   data: Product[];
   status: string;
 }
 
+// Rating
 export interface ProductRatings {
   '1-star': number;
   '2-star': number;
@@ -26,12 +28,28 @@ export interface ProductRatingResponse {
   success: boolean;
 }
 
+// Sentiment
 export interface ProductSentiment {
-  'positive (%)': number;
   'negative (%)': number;
   'neutral (%)': number;
   'none (%)': number;
+  'positive (%)': number;
+  [key: string]: number;
 }
+
+export const DefaultSentiment: ProductSentiment = {
+  'negative (%)': 0,
+  'neutral (%)': 0,
+  'none (%)': 0,
+  'positive (%)': 0,
+};
+
+export const SentimentColors: { [key: string]: string } = {
+  'negative (%)': '#FF5252',
+  'neutral (%)': '#FFCA28',
+  'none (%)': '#9E9E9E',
+  'positive (%)': '#4CAF50',
+};
 
 export interface CategorySentiment {
   [category: string]: ProductSentiment;
@@ -39,7 +57,7 @@ export interface CategorySentiment {
 
 export interface ProductSentimentResponse {
   success: boolean;
-  data: CategorySentiment;
+  data: ProductSentiment;
   message?: string;
 }
 

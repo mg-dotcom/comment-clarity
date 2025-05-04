@@ -6,6 +6,8 @@ import {
   transition,
 } from '@angular/animations';
 
+export const animationDuration = 200;
+
 export const modalAnimations = [
   trigger('modalBackdrop', [
     transition(':enter', [

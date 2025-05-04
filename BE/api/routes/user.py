@@ -8,8 +8,11 @@ from auth import jwt_required  # เพิ่มการใช้ JWT
 
 # สร้าง API สำหรับดึงข้อมูลจากตาราง users
 @api_bp.route('/users', methods=['GET'])
-def get_all_users():
-    users, error = User.get_all()
+@jwt_required
+def get_all_users(decoded_token):
+    user_id = decoded_token['sub']
+
+    users, error = User.get_all(user_id)
     
     if error:
         status_code = 404 if 'not found' in error.lower() else 500

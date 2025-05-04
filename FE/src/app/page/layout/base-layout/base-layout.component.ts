@@ -4,6 +4,7 @@ import { RouterOutlet } from '@angular/router';
 import { SidebarComponent } from '../../product/sidebar/sidebar.component';
 import { HeaderComponent } from '../../product/header/header.component';
 import { Router, NavigationEnd, Event as RouterEvent } from '@angular/router';
+import { inject } from '@angular/core';
 import { filter } from 'rxjs/operators';
 
 @Component({
@@ -14,13 +15,14 @@ import { filter } from 'rxjs/operators';
   styleUrl: './base-layout.component.css',
 })
 export class BaseLayoutComponent {
+  router = inject(Router);
   hasProducts = false;
   isLoading = false;
   error: string | null = null;
 
   showAddProductModal = false;
 
-  constructor(private router: Router) {}
+  constructor() {}
 
   // base-layout.component.ts
   ngOnInit() {
