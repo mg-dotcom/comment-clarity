@@ -35,7 +35,7 @@ export class ProductStoreService {
 
     try {
       const response = await this.productService.getAllProducts();
-      if (response.status === 'success' && response.data) {
+      if (response.success && response.data) {
         this._products.set(response.data);
       } else {
         this._products.set([]);
@@ -55,7 +55,7 @@ export class ProductStoreService {
 
     try {
       const response = await this.productService.getProdutById(productId);
-      if (response.status === 'success' && response.data) {
+      if (response.success && response.data) {
         const productData = Array.isArray(response.data)
           ? response.data[0]
           : response.data;
@@ -81,7 +81,7 @@ export class ProductStoreService {
       const response = await this.productService.getProductWithAllComments(
         productId
       );
-      if (response.status === 'success' && response.data) {
+      if (response.success && response.data) {
         const productData = Array.isArray(response.data)
           ? response.data[0]
           : response.data;
@@ -243,7 +243,7 @@ export class ProductStoreService {
     try {
       const response = await this.productService.deleteProduct(productId);
       console.log(response);
-      if (response && response.status === 'success') {
+      if (response && response.success) {
         this._products.set(
           this._products().filter((product) => product.productId !== productId)
         );

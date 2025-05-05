@@ -12,18 +12,18 @@ def get_all_comments(decoded_token):  # รับ decoded_token จาก decora
         
         if error:
             return jsonify({
-                'status': 'error',
+                'success': False,
                 'message': error
             }), 500
         
         return jsonify({
-            'status': 'success',
+            'success': True,
             'data': comments
         }), 200
     
     except Exception as e:
         return jsonify({
-            'status': 'error',
+           'success': False,
             'message': f'Server error: {str(e)}'
         }), 500
 
@@ -37,18 +37,18 @@ def get_comment_by_id(decoded_token,comment_id):
         if error:
             status_code = 404 if 'not found' in error else 500
             return jsonify({
-                'status': 'error',
+                'success': False,
                 'message': error
             }), status_code
         
         return jsonify({
-            'status': 'success',
+            'success': True,
             'data': comment
         }), 200
     
     except Exception as e:
         return jsonify({
-            'status': 'error',
+            'success': False,
             'message': f'Server error: {str(e)}'
         }), 500
 
@@ -63,17 +63,17 @@ def get_user_comments(decoded_token):
         
         if error:
             return jsonify({
-                'status': 'error',
+                'success': False,
                 'message': error
             }), 500
         
         return jsonify({
-            'status': 'success',
+            'success': True,
             'data': comments
         }), 200
     
     except Exception as e:
         return jsonify({
-            'status': 'error',
+           'success': False,
             'message': f'Server error: {str(e)}'
         }), 500

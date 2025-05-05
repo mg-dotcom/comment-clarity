@@ -9,7 +9,7 @@ export interface Product {
 export interface ProductResponse {
   response: Product;
   data: Product[];
-  status: string;
+  success: boolean;
 }
 
 // Rating
@@ -56,5 +56,3 @@ export interface ProductSentimentResponse {
   data: ProductSentiment;
   message?: string;
 }
-
-

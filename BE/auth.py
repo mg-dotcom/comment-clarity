@@ -18,7 +18,7 @@ def jwt_required(optional=False):
             auth_header = request.headers.get('Authorization')
             if not auth_header or not auth_header.startswith('Bearer '):
                 return jsonify({
-                    'status': 'error',
+                    'success': False,
                     'message': 'Missing or invalid authorization token'
                 }), 401
             
@@ -34,7 +34,7 @@ def jwt_required(optional=False):
                 return f(decoded_token, *args, **kwargs)
             except Exception as e:
                 return jsonify({
-                    'status': 'error',
+                   'success': False,
                     'message': f'JWT error: {str(e)}'
                 }), 401
                 
@@ -52,7 +52,7 @@ def jwt_required(optional=False):
             
             if not auth_header or not auth_header.startswith('Bearer '):
                 return jsonify({
-                    'status': 'error',
+                   'success': False,
                     'message': 'Missing or invalid authorization token'
                 }), 401
             
@@ -68,7 +68,7 @@ def jwt_required(optional=False):
                 return f(decoded_token, *args, **kwargs)
             except Exception as e:
                 return jsonify({
-                    'status': 'error',
+                    'success': False,
                     'message': f'JWT error: {str(e)}'
                 }), 401
                 

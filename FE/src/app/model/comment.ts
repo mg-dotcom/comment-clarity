@@ -20,7 +20,7 @@ export interface ProductCommentsResponse {
 
 export interface ApiResponse {
   data: ProductCommentsResponse[];
-  status: string;
+  success: boolean;
 }
 
 export interface CommentCategory {
@@ -46,7 +46,7 @@ export interface ProductCommentsFull {
 }
 
 export interface CommentsResponse {
-  status?: string;
+  success: boolean;
   data: ProductCommentsFull[];
 }
 

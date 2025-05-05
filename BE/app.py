@@ -29,7 +29,9 @@ def create_app():
     @app.errorhandler(Exception)
     def handle_exception(e):
         app.logger.error(f"Unhandled Exception: {e}")
-        return jsonify({'status': 'error', 'message': 'Internal Server Error'}), 500
+        return jsonify({
+            'success': False,
+            'message': 'Internal Server Error'}), 500
 
     app.register_blueprint(api_bp, url_prefix='/api')
 

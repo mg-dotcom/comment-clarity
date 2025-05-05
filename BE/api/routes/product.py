@@ -16,18 +16,18 @@ def get_all_products(decoded_token):
         
         if error:
             return jsonify({
-                'status': 'error',
+                'success': False,
                 'message': error
             }), 500
         
         return jsonify({
-            'status': 'success',
+            'success': True,
             'data': products
         }), 200
     
     except Exception as e:
         return jsonify({
-            'status': 'error',
+            'success': False,
             'message': f'Server error: {str(e)}'
         }), 500
 
@@ -41,18 +41,18 @@ def get_current_user_products(decoded_token):
         
         if error:
             return jsonify({
-                'status': 'error',
+                'success': False,
                 'message': error
             }), 500
         
         return jsonify({
-            'status': 'success',
+            'success': True,
             'data': products
         }), 200
     
     except Exception as e:
         return jsonify({
-            'status': 'error',
+             'success': False,
             'message': f'Server error: {str(e)}'
         }), 500
     
@@ -66,24 +66,24 @@ def get_by_id_and_user(decoded_token, product_id):
         
         if error:
             return jsonify({
-                'status': 'error',
+                'success': False,
                 'message': error
             }), 500
         
         if not product:
             return jsonify({
-                'status': 'error',
+                'success': False,
                 'message': 'Product not found'
             }), 404
         
         return jsonify({
-            'status': 'success',
+            'success': True,
             'data': product
         }), 200
     
     except Exception as e:
         return jsonify({
-            'status': 'error',
+            'success': False,
             'message': f'Server error: {str(e)}'
         }), 500
 
@@ -97,13 +97,13 @@ def get_product_with_comments(decoded_token, product_id):
         
         if product_error:
             return jsonify({
-                'status': 'error',
+                'success': False,
                 'message': product_error
             }), 500
         
         if not product:
             return jsonify({
-                'status': 'error',
+                'success': False,
                 'message': 'Product not found'
             }), 404
         
@@ -116,14 +116,14 @@ def get_product_with_comments(decoded_token, product_id):
         product['comments'] = comments
         
         return jsonify({
-            'status': 'success',
+            'success': True,
             'data': [product] 
         }), 200
     
     except Exception as e:
         logging.error(f"Error in get_product_with_comments: {str(e)}")
         return jsonify({
-            'status': 'error',
+            'success': False,
             'message': f'Server error: {str(e)}'
         }), 500
 
@@ -288,16 +288,15 @@ def delete_user_product(decoded_token, product_id):
         
         if success:
             return jsonify({
-                'status': 'success',
+                'success': True,
                 'message': message}), 200
         else:
             return jsonify({
-                'status': 'error',
+                'success': False,
                 'error': message}), 400
     except Exception as e:
         logging.error(f"Error in delete_user_product: {str(e)}")
         return jsonify({
-            'status': 'error',
-            'status': 'error',
+           'success': False,
             'message': f'Server error: {str(e)}'
         }), 500
