@@ -7,7 +7,7 @@
 
     <section class="mb-10">
       <!-- Loading State -->
-      @if (isLoading) {
+      @if (isLoading()) {
       <div
         class="mb-6 bg-white rounded-lg p-4 shadow-sm flex items-center justify-center"
         id="loadingState"
@@ -39,7 +39,7 @@
       }
 
       <!-- Error State -->
-      @if (error) {
+      @if (error()) {
       <div
         class="mb-6 bg-red-50 flex items-center justify-center gap-4 rounded-lg p-6 text-center shadow-sm"
         id="errorState"
@@ -69,7 +69,7 @@
               An error occurred while loading comments. Please try again later.
             </p>
             <button
-              (click)="loadProductCategoryCommentsSentiment()"
+              (click)="refreshLoadProductCategoryCommentsSentiment()"
               class="mt-2 text-sm bg-red-100 hover:bg-red-200 text-red-800 px-3 py-1 rounded-md transition-colors duration-200"
             >
               Try Again
@@ -80,9 +80,9 @@
       }
 
       <!-- Comments List -->
-      @if (!isLoading && !error) {
+      @if (!isLoading() && !error()) {
       <div class="space-y-4">
-        @for (categoryComment of categoryComments; track categoryComment) {
+        @for (commentSentiment of commentsSentiment(); track commentSentiment) {
         <div
           class="bg-white rounded-lg p-4 flex items-start gap-4 shadow-sm hover:shadow-md hover:bg-gray-50 transition-all duration-200"
         >
@@ -110,14 +110,14 @@
               <div class="flex items-center space-x-1">
                 <div class="flex items-center space-x-1">
                   <span class="text-sm text-gray-500 mr-2">
-                    {{ categoryComment.ratings || 0 }}/5
+                    {{ commentSentiment.ratings || 0 }}/5
                   </span>
                   @for (star of [1, 2, 3, 4, 5]; track star) {
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     class="h-4 w-4"
                     [class]="
-                      star <= (categoryComment.ratings || 0)
+                      star <= (commentSentiment.ratings || 0)
                         ? 'text-yellow-400 fill-current'
                         : 'text-gray-300 fill-current'
                     "
@@ -133,10 +133,10 @@
             </div>
             <div class="flex justify-between items-start mt-2">
               <p class="text-sm text-gray-600">
-                {{ categoryComment.text || "No comment text available" }}
+                {{ commentSentiment.text || "No comment text available" }}
               </p>
               <span class="text-sm text-gray-500">
-                {{ categoryComment.date | date : "dd/MM/yyyy" }}
+                {{ commentSentiment.date | date : "dd/MM/yyyy" }}
               </span>
             </div>
           </div>
@@ -146,8 +146,8 @@
       }
 
       <!-- No Comments  -->
-      @if (!isLoading && !error && (!categoryComments || categoryComments.length
-      === 0)) {
+      @if (!isLoading() && !error() && (!commentsSentiment() ||
+      commentsSentiment().length === 0)) {
       <div class="bg-gray-50 rounded-lg p-6 text-center shadow-sm">
         <div class="flex flex-col items-center justify-center">
           <svg

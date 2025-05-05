@@ -15,7 +15,7 @@ export interface ProductCommentsResponse {
   startDate: string;
   endDate: string;
   createdAt: string;
-  comments: Comment[]; 
+  comments: Comment[];
 }
 
 export interface ApiResponse {
@@ -48,4 +48,16 @@ export interface ProductCommentsFull {
 export interface CommentsResponse {
   status?: string;
   data: ProductCommentsFull[];
+}
+
+export interface CommentCategorySentiment {
+  commentId: number;
+  date: string;
+  ratings: number;
+  text: string;
+  userName: string;
+}
+
+export interface CommentsSentimentData {
+  comments: CommentCategorySentiment[];
 }

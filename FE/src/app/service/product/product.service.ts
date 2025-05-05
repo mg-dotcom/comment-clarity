@@ -165,7 +165,7 @@ export class ProductService {
   }
 
   async getProductCategoryCommentsSentiment(
-    productId: string,
+    productId: number,
     categoryName: string,
     sentiment: string
   ): Promise<ProductSentimentResponse> {

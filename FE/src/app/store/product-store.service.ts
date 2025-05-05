@@ -1,7 +1,11 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { ProductService } from '../service/product/product.service';
 import { Product, ProductSentiment, DefaultSentiment } from '../model/product';
-import { Comment } from '../model/comment';
+import {
+  Comment,
+  CommentCategorySentiment,
+  CommentsSentimentData,
+} from '../model/comment';
 
 @Injectable({ providedIn: 'root' })
 export class ProductStoreService {
@@ -10,12 +14,14 @@ export class ProductStoreService {
   private _error = signal<string | null>(null);
   private _product = signal<Product | null>(null);
   private _comments = signal<Comment[]>([]);
+  private _commentsSentiment = signal<CommentCategorySentiment[]>([]);
   private _ratings = signal<{ score: number; comments: number }[]>([]);
   private _sentimentData = signal<ProductSentiment | null>(null);
 
   products = computed(() => this._products());
   product = computed(() => this._product());
   comments = computed(() => this._comments());
+  commentsSentiment = computed(() => this._commentsSentiment());
   ratings = computed(() => this._ratings());
   sentimentData = computed(() => this._sentimentData() ?? DefaultSentiment);
   loading = computed(() => this._loading());
@@ -178,6 +184,53 @@ export class ProductStoreService {
     } catch (err) {
       this._error.set(err instanceof Error ? err.message : 'Unknown error');
       this._sentimentData.set(null);
+    } finally {
+      this._loading.set(false);
+    }
+  }
+
+  async loadProductCategoryCommentsSentiment(
+    productId: number,
+    categoryName: string,
+    sentiment: string
+  ): Promise<void> {
+    this._loading.set(true);
+    this._error.set(null);
+    this._commentsSentiment.set([]);
+    if (!productId || !categoryName || !sentiment) {
+      this._error.set('Missing required parameters');
+      this._loading.set(false);
+      return;
+    }
+    try {
+      const response =
+        await this.productService.getProductCategoryCommentsSentiment(
+          productId,
+          categoryName,
+          sentiment
+        );
+      if (response && response.success) {
+        const data = response.data;
+
+        const rawSentimentData = data[sentiment];
+        const sentimentEntry =
+          typeof rawSentimentData === 'object' && rawSentimentData !== null
+            ? (rawSentimentData as CommentsSentimentData)
+            : undefined;
+
+        if (sentimentEntry && Array.isArray(sentimentEntry.comments)) {
+          this._commentsSentiment.set(sentimentEntry.comments);
+        } else {
+          this._error.set(`No data available for ${sentiment} sentiment`);
+          this._commentsSentiment.set([]);
+        }
+      } else {
+        this._error.set(response.message || 'Failed to fetch comments');
+      }
+    } catch (err) {
+      this._error.set(
+        err instanceof Error ? err.message : 'An unexpected error occurred'
+      );
     } finally {
       this._loading.set(false);
     }
