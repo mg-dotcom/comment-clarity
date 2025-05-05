@@ -20,7 +20,7 @@ export class LoginComponent {
   productService = inject(ProductService);
   route = inject(ActivatedRoute);
   fb = inject(FormBuilder);
-  
+
   loginForm: FormGroup;
   error: string = '';
   loading: boolean = false;
@@ -53,7 +53,7 @@ export class LoginComponent {
 
     try {
       const status = await this.authService.login(email, password);
-      if (status === 'success') {
+      if (status) {
         const returnUrl =
           this.route.snapshot.queryParams['returnUrl'] || '/product';
         this.router.navigateByUrl(returnUrl);

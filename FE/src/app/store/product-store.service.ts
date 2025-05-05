@@ -235,6 +235,30 @@ export class ProductStoreService {
       this._loading.set(false);
     }
   }
+
+  async deleteProduct(productId: number): Promise<void> {
+    this._loading.set(true);
+    this._error.set(null);
+
+    try {
+      const response = await this.productService.deleteProduct(productId);
+      console.log(response);
+      if (response && response.status === 'success') {
+        this._products.set(
+          this._products().filter((product) => product.productId !== productId)
+        );
+
+        console.log(this._products);
+      } else {
+        this._error.set('Failed to delete product');
+      }
+    } catch (err) {
+      this._error.set(err instanceof Error ? err.message : 'Unknown error');
+    } finally {
+      this._loading.set(false);
+    }
+  }
+
   clear() {
     this._products.set([]);
     this._loading.set(false);

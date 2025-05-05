@@ -17,18 +17,18 @@ def get_all_users(decoded_token):
     if error:
         status_code = 404 if 'not found' in error.lower() else 500
         return jsonify({
-            'status': 'error',
+            'success': False,
             'message': error
         }), status_code
     
     if users is None or len(users) == 0:
         return jsonify({
-            'status': 'success',
+            'success': True,
             'data': []
         }), 200
     
     return jsonify({
-        'status': 'success',
+        'success': True,
         'data': users
     }), 200
 
@@ -40,18 +40,18 @@ def get_user_by_id(user_id):
     if error:
         status_code = 404 if 'not found' in error.lower() else 500
         return jsonify({
-            'status': 'error',
+            'success': False,
             'message': error
         }), status_code
     
     if user is None:
         return jsonify({
-            'status': 'error',
+            'success': False,
             'message': f"User with ID {user_id} not found"
         }), 404
     
     return jsonify({
-        'status': 'success',
+       'success': True,
         'data': user
     }), 200
 
@@ -66,24 +66,24 @@ def register_user():
     
     if not firstName or not lastName or not email or not password:
         return jsonify({
-            'status': 'error',
+            'success': False,
             'message': 'Invalid input'
         }), 400
     
     if User.user_exists(email):
         return jsonify({
-            'status': 'error',
+            'success': False,
             'message': 'User already exists'
         }), 400
     
     if User.register(firstName, lastName, email, password):
         return jsonify({
-            'status': 'success',
+            'success': True,
             'message': 'User registered successfully'
         }), 201
     
     return jsonify({
-        'status': 'error',
+        'success': False,
         'message': 'Error registering user'
     }), 500
 
@@ -96,7 +96,7 @@ def login_user():
     
     if not email or not password:
         return jsonify({
-            'status': 'error',
+            'success': False,
             'message': 'Invalid input'
         }), 400
     
@@ -106,7 +106,7 @@ def login_user():
         access_token = create_access_token(identity=str(user.userId))
         
         return jsonify({
-            'status': 'success',
+           'success': True,
             'data': {
                 'access_token': access_token,
                 'user': {
@@ -119,22 +119,7 @@ def login_user():
         }), 200
     
     return jsonify({
-        'status': 'error',
+        'success': False,
         'message': 'Invalid email or password'
     }), 401
 
-@api_bp.route('/users/firstProducts', methods=['GET'])
-@jwt_required
-def get_user_products(decoded_token):
-    try:
-        user_id = decoded_token['sub']
-
-        products, error = User.get_latest_product_by_user(user_id)
-
-        if error:
-            return jsonify({'status': 'error', 'message': error}), 500
-
-        return jsonify({'status': 'success', 'data': products}), 200
-
-    except Exception as e:
-        return jsonify({'status': 'error', 'message': str(e)}), 500

@@ -34,4 +34,11 @@ export class ProductListComponent implements OnInit {
   refreshProducts(): void {
     this.store.loadProducts();
   }
+
+  deleteProduct(productId: number, event: MouseEvent): void {
+    event.stopPropagation();
+    if (confirm('Are you sure you want to delete this product?')) {
+      this.store.deleteProduct(productId);
+    }
+  }
 }

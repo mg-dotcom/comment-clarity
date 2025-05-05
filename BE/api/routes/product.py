@@ -287,12 +287,17 @@ def delete_user_product(decoded_token, product_id):
         success, message = Product.delete_user_product(user_id, product_id)
         
         if success:
-            return jsonify({'message': message}), 200
+            return jsonify({
+                'status': 'success',
+                'message': message}), 200
         else:
-            return jsonify({'error': message}), 400
+            return jsonify({
+                'status': 'error',
+                'error': message}), 400
     except Exception as e:
         logging.error(f"Error in delete_user_product: {str(e)}")
         return jsonify({
+            'status': 'error',
             'status': 'error',
             'message': f'Server error: {str(e)}'
         }), 500

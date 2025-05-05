@@ -198,4 +198,28 @@ export class ProductService {
 
     return response.json();
   }
+
+  async deleteProduct(productId: number): Promise<ProductResponse> {
+    const accessToken = await this.authService.getToken();
+
+    if (!accessToken) {
+      this.router.navigate(['/login']);
+      throw new Error('Access token not found');
+    }
+
+    const response = await fetch(`${this.apiUrl}/product/${productId}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      this.router.navigate(['/product']);
+      throw new Error('Failed to delete product');
+    }
+
+    return response.json();
+  }
 }

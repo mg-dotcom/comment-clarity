@@ -59,7 +59,7 @@ export class RegisterComponent {
         password
       );
 
-      if (status === 'success') {
+      if (status) {
         const returnUrl =
           this.route.snapshot.queryParams['returnUrl'] || '/login';
         this.router.navigateByUrl(returnUrl);

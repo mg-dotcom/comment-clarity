@@ -29,11 +29,11 @@ export class AuthService {
 
       const result = await response.json();
 
-      if (result.status === 'success' && result.data?.access_token) {
+      if (result.success && result.data?.access_token) {
         localStorage.setItem(this.authSecretKey, result.data.access_token);
         localStorage.setItem('user', JSON.stringify(result.data.user));
         this.isAuthenticated = true;
-        return result.status;
+        return result.success;
       }
       return 'Invalid credentials';
     } catch (error) {
@@ -62,8 +62,8 @@ export class AuthService {
 
       const result = await response.json();
 
-      if (response.ok && result.status === 'success') {
-        return result.status;
+      if (response && result.success) {
+        return result.success;
       } else {
         throw new Error(result.message || 'Registration failed');
       }
