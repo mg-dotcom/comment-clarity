@@ -5,6 +5,7 @@ import logging
 from flask import request
 from auth import jwt_required  # เพิ่มการใช้ JWT
 from api.models.comment import Comment
+from analyze_model import test_analyze_model as model
 
 
 # สร้าง API สำหรับดึงข้อมูลจากตาราง products
@@ -281,7 +282,7 @@ def get_product_sentiment_by_category_detail(decoded_token, product_id):
 
 @api_bp.route('/product/<int:product_id>', methods=['DELETE'])
 @jwt_required()
-def delete_user_product(decoded_token, product_id):
+def delete_user_product(decoded_token, product_id): 
     try:
         user_id = decoded_token['sub']
         success, message = Product.delete_user_product(user_id, product_id)
@@ -300,3 +301,78 @@ def delete_user_product(decoded_token, product_id):
            'success': False,
             'message': f'Server error: {str(e)}'
         }), 500
+    
+# สร้าง API สำหรับเพิ่มข้อมูลสินค้าลงในตาราง products
+@api_bp.route('/product/create', methods=['POST'])
+@jwt_required()
+def create_product_and_analyze(decoded_token):
+    data = request.json
+    user_id = decoded_token['sub']
+    
+    product_name = data.get('productName')
+    product_link = data.get('productLink')
+    start_date = data.get('startDate')
+    end_date = data.get('endDate')
+
+    if not all([product_name, product_link, start_date, end_date]):
+        return jsonify({'success': False, 'message': 'Missing required fields'}), 400
+
+    # STEP 1: สร้าง Product ในตาราง products
+    # ตรวจสอบว่าผู้ใช้มีสินค้านี้อยู่แล้วหรือไม่
+    product_id, error = Product.create_product_if_unique_for_user(
+        product_name, start_date, end_date, user_id
+    )
+
+    if error:
+        return jsonify({'success': False, 'message': error}), 400
+
+    # STEP 2: วิเคราะห์ข้อมูลจาก product_link
+    try:
+        df = model.analyze(product_link)
+
+        for _, row in df.iterrows():
+            comment_category_id = get_comment_category_id(row['commentCategoryName'])
+            sentiment_id = get_sentiment_id(row['sentimentType'])
+
+            # STEP 3: เพิ่มข้อมูลคอมเมนต์ลงในตาราง comments
+            success, error = Comment.insert_comment(
+                product_id=product_id,
+                user_id=user_id,
+                comment_category_id=comment_category_id,
+                ratings=row['ratings'],
+                text=row['text'],
+                sentiment_id=sentiment_id
+            )
+
+            if not success:
+                return jsonify({'success': False, 'message': f'Insert failed: {error}'}), 500
+
+        return jsonify({
+            'success': True,
+            'message': 'Product and comments created successfully',
+            'productId': product_id,
+            'commentCount': len(df)
+        }), 201
+
+    except Exception as e:
+        return jsonify({'success': False, 'message': f'Analyze error: {str(e)}'}), 500
+
+# ฟังก์ชันเพื่อแปลงชื่อ commentCategoryName เป็น commentCategoryId
+def get_comment_category_id(comment_category_name):
+    comment_category_map = {
+        'Product': 1,
+        'Delivery': 2,
+        'Service': 3,
+        'Other': 4
+    }
+    return comment_category_map.get(comment_category_name, 4)  # จะคืนค่า 4 (Other) ถ้าไม่พบชื่อใน map
+
+# ฟังก์ชันเพื่อแปลงชื่อ sentimentType เป็น sentimentId
+def get_sentiment_id(sentiment_type):
+    sentiment_map = {
+        'Positive': 1,
+        'Negative': 2,
+        'Neutral': 3,
+        'None': 4
+    }
+    return sentiment_map.get(sentiment_type, 4)  # จะคืนค่า 4 (None) ถ้าไม่พบชื่อใน map

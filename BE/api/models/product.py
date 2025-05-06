@@ -91,7 +91,6 @@ class Product:
         try:
             cursor = mysql.connection.cursor()
             
-            # ตรวจสอบว่า product นี้เป็นของ user นี้จริงๆ
             cursor.execute("""
                 SELECT * FROM products 
                 WHERE productId = %s AND userId = %s
@@ -101,13 +100,11 @@ class Product:
                 cursor.close()
                 return False, "Product not found or not owned by this user"
             
-            # ลบ comments ที่เกี่ยวข้องก่อน
             cursor.execute("""
                 DELETE FROM comments 
                 WHERE productId = %s
             """, (product_id,))
-            
-            # จากนั้นค่อยลบ product
+
             cursor.execute("""
                 DELETE FROM products 
                 WHERE productId = %s AND userId = %s
@@ -120,3 +117,33 @@ class Product:
             
         except Exception as e:
             return False, str(e)
+            
+    @staticmethod
+    def create_product_if_unique_for_user(product_name, start_date, end_date, user_id):
+        try:
+            cursor = mysql.connection.cursor()
+
+            # เช็คชื่อซ้ำ
+            cursor.execute("""
+                SELECT * FROM products 
+                WHERE productName = %s AND userId = %s
+            """, (product_name, user_id))
+
+            if cursor.fetchone():
+                cursor.close()
+                return None, "This product name already exists for this user."
+
+            # Insert
+            cursor.execute("""
+                INSERT INTO products (productName, startDate, endDate, createdAt, userId)
+                VALUES (%s, %s, %s, NOW(), %s)
+            """, (product_name, start_date, end_date, user_id))
+
+            mysql.connection.commit()
+            product_id = cursor.lastrowid  
+            cursor.close()
+            return product_id, None
+
+        except Exception as e:
+            return None, str(e)
+

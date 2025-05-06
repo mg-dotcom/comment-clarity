@@ -45,7 +45,6 @@ export class ProductAddComponent {
   }
 
   // add product 
-
   isDateRangeInvalid(): boolean {
     const startDate = this.productForm.get('startDate')?.value;
     const endDate = this.productForm.get('endDate')?.value;
