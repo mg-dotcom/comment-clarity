@@ -8,6 +8,7 @@ import {
   ProductResponse,
   ProductRatingResponse,
   ProductSentimentResponse,
+  ProductResponseWithComments,
 } from '../../model/product';
 
 @Injectable({
@@ -218,6 +219,40 @@ export class ProductService {
     if (!response.ok) {
       this.router.navigate(['/product']);
       throw new Error('Failed to delete product');
+    }
+
+    return response.json();
+  }
+
+  async addProduct(
+    productName: string,
+    productLink: string,
+    startDate: string,
+    endDate: string
+  ): Promise<ProductResponseWithComments> {
+    const accessToken = await this.authService.getToken();
+
+    if (!accessToken) {
+      this.router.navigate(['/login']);
+      throw new Error('Access token not found');
+    }
+
+    const response = await fetch(`${this.apiUrl}/product/create`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        productName: productName,
+        productLink: productLink,
+        startDate: startDate,
+        endDate: endDate,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to add product');
     }
 
     return response.json();

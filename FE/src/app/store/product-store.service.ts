@@ -247,8 +247,6 @@ export class ProductStoreService {
         this._products.set(
           this._products().filter((product) => product.productId !== productId)
         );
-
-        console.log(this._products);
       } else {
         this._error.set('Failed to delete product');
       }
@@ -257,6 +255,61 @@ export class ProductStoreService {
     } finally {
       this._loading.set(false);
     }
+  }
+
+  async addProduct(
+    productName: string,
+    productLink: string,
+    startDate: string,
+    endDate: string
+  ): Promise<boolean> {
+    const isDuplicate = this.checkDuplicateProductName(productName);
+
+    if (isDuplicate) {
+      this._error.set(
+        'Product name already exists. Please use a different name.'
+      );
+      return false;
+    }
+
+    this._loading.set(true);
+    this._error.set(null);
+
+    try {
+      const response = await this.productService.addProduct(
+        productName,
+        productLink,
+        startDate,
+        endDate
+      );
+
+      if (response && response.success) {
+        const newProduct: Product = {
+          productId: response.data.productId || 0,
+          productName,
+          startDate,
+          endDate,
+          createdAt: new Date().toISOString(),
+        };
+        this._products.set([...this._products(), newProduct]);
+        return true;
+      } else {
+        this._error.set(response.message || 'Failed to add product');
+        return false;
+      }
+    } catch (err) {
+      this._error.set(err instanceof Error ? err.message : 'Unknown error');
+      return false;
+    } finally {
+      this._loading.set(false);
+    }
+  }
+
+  checkDuplicateProductName(productName: string): boolean {
+    return this._products().some(
+      (product) =>
+        product.productName.toLowerCase() === productName.toLowerCase()
+    );
   }
 
   clear() {

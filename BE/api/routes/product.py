@@ -238,7 +238,7 @@ def get_product_sentiment_by_category_detail(decoded_token, product_id):
         sentiment_filter = request.args.get('sentiment', '').strip().lower() or None
 
         valid_categories = ['product', 'delivery', 'service', 'other']
-        valid_sentiments = ['positive', 'negative', 'neutral', 'none']
+        valid_sentiments = ['positive', 'negative', 'neutral']
 
         if not category_name or category_name.lower() not in valid_categories:
             return jsonify({
@@ -313,27 +313,28 @@ def create_product_and_analyze(decoded_token):
     product_link = data.get('productLink')
     start_date = data.get('startDate')
     end_date = data.get('endDate')
-
+    
     if not all([product_name, product_link, start_date, end_date]):
         return jsonify({'success': False, 'message': 'Missing required fields'}), 400
-
+        
     # STEP 1: สร้าง Product ในตาราง products
     # ตรวจสอบว่าผู้ใช้มีสินค้านี้อยู่แล้วหรือไม่
     product_id, error = Product.create_product_if_unique_for_user(
         product_name, start_date, end_date, user_id
     )
-
+    
     if error:
         return jsonify({'success': False, 'message': error}), 400
-
+        
     # STEP 2: วิเคราะห์ข้อมูลจาก product_link
     try:
         df = model.analyze(product_link)
-
+        comment_count = 0
+        
         for _, row in df.iterrows():
             comment_category_id = get_comment_category_id(row['commentCategoryName'])
             sentiment_id = get_sentiment_id(row['sentimentType'])
-
+            
             # STEP 3: เพิ่มข้อมูลคอมเมนต์ลงในตาราง comments
             success, error = Comment.insert_comment(
                 product_id=product_id,
@@ -343,17 +344,20 @@ def create_product_and_analyze(decoded_token):
                 text=row['text'],
                 sentiment_id=sentiment_id
             )
-
+            
             if not success:
                 return jsonify({'success': False, 'message': f'Insert failed: {error}'}), 500
-
+            comment_count += 1
+            
         return jsonify({
             'success': True,
             'message': 'Product and comments created successfully',
-            'productId': product_id,
-            'commentCount': len(df)
+            'data': {
+                'productId': product_id,
+                'commentCount': comment_count
+            }
         }), 201
-
+        
     except Exception as e:
         return jsonify({'success': False, 'message': f'Analyze error: {str(e)}'}), 500
 
@@ -373,6 +377,5 @@ def get_sentiment_id(sentiment_type):
         'Positive': 1,
         'Negative': 2,
         'Neutral': 3,
-        'None': 4
     }
-    return sentiment_map.get(sentiment_type, 4)  # จะคืนค่า 4 (None) ถ้าไม่พบชื่อใน map
+    return sentiment_map.get(sentiment_type, 3)  # จะคืนค่า 3 (Neutral) ถ้าไม่พบชื่อใน map

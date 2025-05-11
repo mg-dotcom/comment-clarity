@@ -85,8 +85,7 @@ export class CategoryComponent implements OnInit, AfterViewInit {
     return (
       (data['negative (%)'] || 0) +
       (data['positive (%)'] || 0) +
-      (data['neutral (%)'] || 0) +
-      (data['none (%)'] || 0)
+      (data['neutral (%)'] || 0)
     );
   }
 }

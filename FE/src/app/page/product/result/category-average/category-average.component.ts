@@ -39,8 +39,7 @@ export class CategoryAverageComponent implements OnInit, AfterViewInit {
   sentimentColors: Record<string, string> = {
     Negative: '#FF5252',
     Neutral: '#FFCA28',
-    None: '#9E9E9E',
-    Positive: '#4CAF50',
+    Positive: '#4CAF50'
   };
 
   chart: Chart | null = null;
@@ -79,8 +78,7 @@ export class CategoryAverageComponent implements OnInit, AfterViewInit {
     return (
       (data['negative (%)'] || 0) +
       (data['positive (%)'] || 0) +
-      (data['neutral (%)'] || 0) +
-      (data['none (%)'] || 0)
+      (data['neutral (%)'] || 0) 
     );
   }
 }

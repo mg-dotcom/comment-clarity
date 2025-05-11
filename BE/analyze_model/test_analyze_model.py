@@ -10,7 +10,7 @@ def analyze(url):
 
     # example: สร้าง DataFrame จากข้อมูลที่วิเคราะห์
     data = {
-    "ratings": [5, 5, 5, 5],
+    "ratings": [5, 1, 3, 2],
     "text": [
         "สินค้าดีมาก! แนะนำให้ซื้อเลย",
         "ประสบการณ์แย่มาก จะไม่ซื้ออีกแล้ว",
@@ -18,7 +18,7 @@ def analyze(url):
         "ไม่มีความคิดเห็น"
     ],
     "date": ["2025-03-01", "2025-03-01", "2025-03-01","2025-03-01"],
-    "sentimentType": ["Positive", "Negative", "Neutral","None"],
+    "sentimentType": ["Positive", "Negative", "Neutral", "Neutral"],
     "commentCategoryName": ["Product", "Delivery", "Other","Service"]
     }
 

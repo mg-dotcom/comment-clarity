@@ -183,21 +183,19 @@ class Comment:
                 categories[category_name.lower()] = {
                     "positive (%)": 0.0,
                     "negative (%)": 0.0,
-                    "neutral (%)": 0.0,
-                    "none (%)": 0.0
+                    "neutral (%)": 0.0
                 }
             else:
                 for category in ['Product', 'Delivery', 'Service', 'Other']:
                     categories[category.lower()] = {
                         "positive (%)": 0.0,
                         "negative (%)": 0.0,
-                        "neutral (%)": 0.0,
-                        "none (%)": 0.0
+                        "neutral (%)": 0.0
                     }
             
             for row in results:
                 category = row[0].lower()
-                sentiment = row[1].lower() if row[1] else "none"
+                sentiment = row[1].lower() if row[1] else "Neutral"
                 count = row[2]
                 total = row[3]
                 
@@ -243,15 +241,14 @@ class Comment:
             sentiments = {
                 "positive (%)": 0.0,
                 "negative (%)": 0.0,
-                "neutral (%)": 0.0,
-                "none (%)": 0.0
+                "neutral (%)": 0.0
             }
             
             total_comments = sum(row[1] for row in results)
             
             if total_comments > 0:
                 for row in results:
-                    sentiment = row[0].lower() if row[0] else "none"
+                    sentiment = row[0].lower() if row[0] else "Neutral"
                     count = row[1]
                     percentage = round((count / total_comments) * 100, 1)
                     print(f"Debug: Processing sentiment '{sentiment}': {count}/{total_comments} = {percentage}%")
