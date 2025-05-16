@@ -1,5 +1,7 @@
 from app import mysql
 from flask import jsonify
+from flask import current_app
+from db import mysql
 
 class Product:
     @staticmethod
@@ -116,34 +118,48 @@ class Product:
             return True, "Product and related comments successfully deleted"
             
         except Exception as e:
+            mysql.connection.rollback()
             return False, str(e)
             
     @staticmethod
-    def create_product_if_unique_for_user(product_name, start_date, end_date, user_id):
-        try:
+    def create_product_if_unique_for_user(product_name, start_date, end_date, user_id, connection=None):
+        if connection:
+            conn = connection
+            cursor = conn.cursor()
+            external_conn = True
+        else:
             cursor = mysql.connection.cursor()
-
-            # เช็คชื่อซ้ำ
+            external_conn = False
+        
+        try:
             cursor.execute("""
                 SELECT * FROM products 
                 WHERE productName = %s AND userId = %s
             """, (product_name, user_id))
-
+            
             if cursor.fetchone():
-                cursor.close()
+                if not external_conn:
+                    cursor.close()
                 return None, "This product name already exists for this user."
-
-            # Insert
+                
             cursor.execute("""
                 INSERT INTO products (productName, startDate, endDate, createdAt, userId)
-                VALUES (%s, %s, %s, NOW(), %s)
+                VALUES (%s, %s, %s, CONVERT_TZ(NOW(), '+00:00', '+07:00'), %s)
             """, (product_name, start_date, end_date, user_id))
-
-            mysql.connection.commit()
-            product_id = cursor.lastrowid  
-            cursor.close()
+            
+            # ถ้าไม่ได้ใช้ external connection ให้ commit เลย
+            if not external_conn:
+                mysql.connection.commit()
+                product_id = cursor.lastrowid
+                cursor.close()
+            else:
+                # ถ้าใช้ external connection ให้เก็บ lastrowid และไม่ต้อง commit
+                product_id = cursor.lastrowid
+                
             return product_id, None
-
+            
         except Exception as e:
+            if not external_conn:
+                mysql.connection.rollback()
+                cursor.close()
             return None, str(e)
-

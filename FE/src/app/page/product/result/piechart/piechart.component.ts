@@ -23,13 +23,30 @@ import { inject } from '@angular/core';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="w-[350px] h-[350px] mx-auto cursor-pointer">
+    <div
+      class="w-full h-full mx-auto"
+      [ngClass]="{
+        'cursor-pointer': activeTab === 'category',
+        'cursor-default': activeTab !== 'category'
+      }"
+    >
       <canvas #pieCanvas></canvas>
     </div>
   `,
+  styles: [
+    `
+      :host {
+        display: block;
+        width: 350px;
+        height: 350px;
+        margin: 0 auto;
+      }
+    `,
+  ],
 })
 export class PieChartComponent implements AfterViewInit, OnDestroy, OnChanges {
   @ViewChild('pieCanvas') pieCanvas!: ElementRef<HTMLCanvasElement>;
+  @Input() activeTab: 'category' | 'review' = 'category';
   @Input() data: ProductSentiment = DefaultSentiment;
   @Input() productId: number = 0;
   @Input() categoryName: string = '';

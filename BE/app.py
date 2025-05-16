@@ -1,12 +1,10 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
-from flask_mysqldb import MySQL
 from config import mysql_config, PORT, DEBUG, JWT_SECRET_KEY
 from api import api_bp
 from flask_jwt_extended import JWTManager
+from db import mysql 
 from datetime import timedelta
-
-mysql = MySQL()
 
 def create_app():
     app = Flask(__name__)

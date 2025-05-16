@@ -2,7 +2,7 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
-def analyze(url):
+def analyze(url, start_date, end_date):
     # ตัวอย่างโค้ดการวิเคราะห์ URL
     # response = requests.get(url).
 

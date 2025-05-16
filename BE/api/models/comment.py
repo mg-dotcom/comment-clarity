@@ -1,5 +1,7 @@
 from app import mysql
 from flask import jsonify
+from flask import current_app
+from db import mysql
 
 class Comment:
     @staticmethod
@@ -353,18 +355,31 @@ class Comment:
             return None, str(e)
         
     @staticmethod
-    def insert_comment(product_id, user_id, comment_category_id, ratings, text, sentiment_id):
-        try:
+    def insert_comment(product_id, user_id, comment_category_id, ratings, text, sentiment_id, connection=None):
+        if connection:
+            conn = connection
+            cursor = conn.cursor()
+            external_conn = True
+        else:
             cursor = mysql.connection.cursor()
+            external_conn = False
+            
+        try:
             cursor.execute("""
                 INSERT INTO comments (productId, userId, commentCategoryId, ratings, text, sentimentId)
                 VALUES (%s, %s, %s, %s, %s, %s)
             """, (product_id, user_id, comment_category_id, ratings, text, sentiment_id))
             
-            mysql.connection.commit()
-            cursor.close()
-            
+            # ถ้าไม่ได้ใช้ external connection ให้ commit เลย
+            if not external_conn:
+                mysql.connection.commit()
+                cursor.close()
+                
             return True, None
-        
+            
         except Exception as e:
+            # ถ้าไม่ได้ใช้ external connection ให้ rollback ที่นี่
+            if not external_conn:
+                mysql.connection.rollback()
+                cursor.close()
             return False, str(e)

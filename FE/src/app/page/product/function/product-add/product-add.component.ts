@@ -30,14 +30,14 @@ export class ProductAddComponent implements OnInit {
   productForm: FormGroup;
   isLoading = this.store.loading;
   error = this.store.error;
-  formError: string | null = null; // เพิ่มตัวแปรสำหรับแสดงข้อผิดพลาดเฉพาะใน form
+  formError: string | null = null;
 
   constructor() {
     this.productForm = new FormGroup({
       productName: new FormControl('', [Validators.required]),
       productLink: new FormControl('', [Validators.required]),
-      startDate: new FormControl('', [Validators.required]), // YYYY-MM
-      endDate: new FormControl('', [Validators.required]), // YYYY-MM
+      startDate: new FormControl('', [Validators.required]),
+      endDate: new FormControl('', [Validators.required]),
     });
   }
 
@@ -50,33 +50,27 @@ export class ProductAddComponent implements OnInit {
       const { productName, productLink, startDate, endDate } =
         this.productForm.value;
 
-      // ตรวจสอบชื่อสินค้าซ้ำก่อนที่จะส่งไปยัง store
-      const isDuplicate = this.store.checkDuplicateProductName(productName);
-      if (isDuplicate) {
-        this.formError = 'Product name already exists. Please use a different name.';
-        return; // ไม่ทำงานต่อ แค่แสดงข้อความเตือนบน modal
-      }
-
-      this.formError = null; // ล้างข้อความเตือนเมื่อไม่มีข้อผิดพลาด
+      this.formError = null;
 
       try {
-        const success = await this.store.addProduct(
+
+        const result = await this.store.addProduct(
           productName,
           productLink,
           startDate,
           endDate
         );
 
-        if (success) {
+        if (result.success) {
           this.close();
           this.router.navigate(['/product']);
-        } else if (this.store.error()) {
-          // ถ้า store.error มีค่า (เช่น กรณีชื่อซ้ำ) ให้แสดงบน modal
-          this.formError = this.store.error();
+        } else {
+          this.formError = result.error || null;
         }
       } catch (error) {
         console.error('Error adding product:', error);
-        this.formError = error instanceof Error ? error.message : 'Unknown error occurred';
+        this.formError =
+          error instanceof Error ? error.message : 'Unknown error occurred';
       }
     }
   }
@@ -95,7 +89,7 @@ export class ProductAddComponent implements OnInit {
     this.modalService.hideProductAddModal();
     setTimeout(() => {
       this.productForm.reset();
-      this.formError = null; // ล้างข้อความเตือนเมื่อปิด modal
+      this.formError = null;
     }, animationDuration);
   }
 }

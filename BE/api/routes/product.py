@@ -6,7 +6,8 @@ from flask import request
 from auth import jwt_required  # เพิ่มการใช้ JWT
 from api.models.comment import Comment
 from analyze_model import test_analyze_model as model
-
+from flask import current_app
+from db import mysql
 
 # สร้าง API สำหรับดึงข้อมูลจากตาราง products
 @api_bp.route('/product/all', methods=['GET'])
@@ -308,27 +309,49 @@ def delete_user_product(decoded_token, product_id):
 def create_product_and_analyze(decoded_token):
     data = request.json
     user_id = decoded_token['sub']
+    product_id = None
     
-    product_name = data.get('productName')
-    product_link = data.get('productLink')
-    start_date = data.get('startDate')
-    end_date = data.get('endDate')
+    # สร้าง connection สำหรับ transaction
+    connection = None
     
-    if not all([product_name, product_link, start_date, end_date]):
-        return jsonify({'success': False, 'message': 'Missing required fields'}), 400
-        
-    # STEP 1: สร้าง Product ในตาราง products
-    # ตรวจสอบว่าผู้ใช้มีสินค้านี้อยู่แล้วหรือไม่
-    product_id, error = Product.create_product_if_unique_for_user(
-        product_name, start_date, end_date, user_id
-    )
-    
-    if error:
-        return jsonify({'success': False, 'message': error}), 400
-        
-    # STEP 2: วิเคราะห์ข้อมูลจาก product_link
     try:
-        df = model.analyze(product_link)
+        product_name = data.get('productName')
+        product_link = data.get('productLink')
+        start_date = data.get('startDate')
+        end_date = data.get('endDate')
+        
+        if not all([product_name, product_link, start_date, end_date]):
+            return jsonify({'success': False, 'message': 'Missing required fields'}), 400
+        
+        connection = mysql.connection
+        
+        # ตั้งค่า autocommit เป็น False เพื่อให้ทำ transaction แบบที่เราควบคุมได้
+        connection.autocommit = False
+        
+        # STEP 1: สร้าง Product ในตาราง products
+        # ตรวจสอบว่าผู้ใช้มีสินค้านี้อยู่แล้วหรือไม่
+        product_id, error = Product.create_product_if_unique_for_user(
+            product_name, start_date, end_date, user_id, connection
+        )
+        
+        if error:
+            if connection:
+                connection.rollback()
+            return jsonify({'success': False, 'message': error}), 400
+            
+        # STEP 2: วิเคราะห์ข้อมูลจาก product_link
+        # ทดสอบว่า link ถูกต้องหรือไม่
+        df = model.analyze(product_link, start_date, end_date)
+        
+        # ตรวจสอบว่าได้รับข้อมูลหรือไม่
+        if df.empty:
+            if connection:
+                connection.rollback()
+            return jsonify({
+                'success': False, 
+                'message': 'No data found for the given time period or product link is invalid'
+            }), 404
+        
         comment_count = 0
         
         for _, row in df.iterrows():
@@ -342,12 +365,28 @@ def create_product_and_analyze(decoded_token):
                 comment_category_id=comment_category_id,
                 ratings=row['ratings'],
                 text=row['text'],
-                sentiment_id=sentiment_id
+                sentiment_id=sentiment_id,
+                connection=connection
             )
             
             if not success:
+                if connection:
+                    connection.rollback()
                 return jsonify({'success': False, 'message': f'Insert failed: {error}'}), 500
             comment_count += 1
+            
+        # ตรวจสอบว่ามีการเพิ่มความคิดเห็นหรือไม่
+        if comment_count == 0:
+            if connection:
+                connection.rollback()
+            return jsonify({
+                'success': False, 
+                'message': 'No comments/reviews found for the specified time period'
+            }), 404
+        
+        # ถ้าทุกอย่างสำเร็จ ให้ commit การเปลี่ยนแปลงทั้งหมด
+        if connection:
+            connection.commit()
             
         return jsonify({
             'success': True,
@@ -359,7 +398,15 @@ def create_product_and_analyze(decoded_token):
         }), 201
         
     except Exception as e:
-        return jsonify({'success': False, 'message': f'Analyze error: {str(e)}'}), 500
+        # กรณีเกิดข้อผิดพลาด ให้ rollback ทั้งหมด
+        if connection:
+            connection.rollback()
+        logging.error(f"Error in create_product_and_analyze: {str(e)}")
+        return jsonify({'success': False, 'message': f'Server error: {str(e)}'}), 500
+    finally:
+        # คืนค่า autocommit กลับเป็นค่าเดิม
+        if connection:
+            connection.autocommit = True
 
 # ฟังก์ชันเพื่อแปลงชื่อ commentCategoryName เป็น commentCategoryId
 def get_comment_category_id(comment_category_name):

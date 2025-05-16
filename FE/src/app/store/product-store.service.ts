@@ -242,7 +242,6 @@ export class ProductStoreService {
 
     try {
       const response = await this.productService.deleteProduct(productId);
-      console.log(response);
       if (response && response.success) {
         this._products.set(
           this._products().filter((product) => product.productId !== productId)
@@ -262,18 +261,18 @@ export class ProductStoreService {
     productLink: string,
     startDate: string,
     endDate: string
-  ): Promise<boolean> {
+  ): Promise<{ success: boolean; isDuplicate?: boolean; error?: string }> {
     const isDuplicate = this.checkDuplicateProductName(productName);
-
     if (isDuplicate) {
-      this._error.set(
-        'Product name already exists. Please use a different name.'
-      );
-      return false;
+      return { 
+        success: false, 
+        isDuplicate: true, 
+        error: 'Product name already exists. Please use a different name.' 
+      };
     }
 
     this._loading.set(true);
-    this._error.set(null);
+    // ไม่ตั้งค่า global error ที่นี่อีกต่อไป เพื่อไม่ให้กระทบกับหน้า list
 
     try {
       const response = await this.productService.addProduct(
@@ -283,7 +282,7 @@ export class ProductStoreService {
         endDate
       );
 
-      if (response && response.success) {
+      if (response?.success && response.data?.productId) {
         const newProduct: Product = {
           productId: response.data.productId || 0,
           productName,
@@ -292,14 +291,20 @@ export class ProductStoreService {
           createdAt: new Date().toISOString(),
         };
         this._products.set([...this._products(), newProduct]);
-        return true;
+        return { success: true };
       } else {
-        this._error.set(response.message || 'Failed to add product');
-        return false;
+        return { 
+          success: false, 
+          error: response.message || 'Failed to add product' 
+        };
       }
     } catch (err) {
-      this._error.set(err instanceof Error ? err.message : 'Unknown error');
-      return false;
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+
+      return { 
+        success: false,
+        error: errorMessage
+      };
     } finally {
       this._loading.set(false);
     }

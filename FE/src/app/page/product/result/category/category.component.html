@@ -182,6 +182,7 @@
 
       <app-pie-chart
         *ngIf="activeTab === 'review'"
+        [activeTab]="activeTab"
         [data]="sentimentData()"
       ></app-pie-chart>
 
