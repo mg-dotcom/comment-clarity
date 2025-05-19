@@ -5,7 +5,7 @@ import logging
 from flask import request
 from auth import jwt_required  # เพิ่มการใช้ JWT
 from api.models.comment import Comment
-from analyze_model import test_analyze_model as model
+from analyze_model.analyze import analyze as model_analyze
 from flask import current_app
 from db import mysql
 
@@ -310,10 +310,7 @@ def create_product_and_analyze(decoded_token):
     data = request.json
     user_id = decoded_token['sub']
     product_id = None
-    
-    # สร้าง connection สำหรับ transaction
-    connection = None
-    
+
     try:
         product_name = data.get('productName')
         product_link = data.get('productLink')
@@ -322,91 +319,92 @@ def create_product_and_analyze(decoded_token):
         
         if not all([product_name, product_link, start_date, end_date]):
             return jsonify({'success': False, 'message': 'Missing required fields'}), 400
-        
-        connection = mysql.connection
-        
-        # ตั้งค่า autocommit เป็น False เพื่อให้ทำ transaction แบบที่เราควบคุมได้
-        connection.autocommit = False
-        
-        # STEP 1: สร้าง Product ในตาราง products
-        # ตรวจสอบว่าผู้ใช้มีสินค้านี้อยู่แล้วหรือไม่
-        product_id, error = Product.create_product_if_unique_for_user(
-            product_name, start_date, end_date, user_id, connection
-        )
-        
-        if error:
-            if connection:
-                connection.rollback()
-            return jsonify({'success': False, 'message': error}), 400
             
-        # STEP 2: วิเคราะห์ข้อมูลจาก product_link
-        # ทดสอบว่า link ถูกต้องหรือไม่
-        df = model.analyze(product_link, start_date, end_date)
+        # ขั้นตอนที่ 1: ทำการวิเคราะห์ข้อมูลก่อนดำเนินการกับฐานข้อมูล
+
+        try:
+            df = model_analyze(product_link, start_date, end_date)
+        except Exception as e:
+            return jsonify({
+                'success': False,
+                'message': f'Analysis failed: {str(e)}'
+            }), 500
         
-        # ตรวจสอบว่าได้รับข้อมูลหรือไม่
-        if df.empty:
-            if connection:
-                connection.rollback()
+        if df is None or df.empty:
             return jsonify({
                 'success': False, 
                 'message': 'No data found for the given time period or product link is invalid'
             }), 404
-        
-        comment_count = 0
-        
-        for _, row in df.iterrows():
-            comment_category_id = get_comment_category_id(row['commentCategoryName'])
-            sentiment_id = get_sentiment_id(row['sentimentType'])
             
-            # STEP 3: เพิ่มข้อมูลคอมเมนต์ลงในตาราง comments
-            success, error = Comment.insert_comment(
-                product_id=product_id,
-                user_id=user_id,
-                comment_category_id=comment_category_id,
-                ratings=row['ratings'],
-                text=row['text'],
-                sentiment_id=sentiment_id,
-                connection=connection
+        
+        # ขั้นตอนที่ 2: ดำเนินการกับฐานข้อมูล (transaction)
+        connection = None
+        try:
+            connection = mysql.connection
+            connection.autocommit = False
+            
+            product_id, error = Product.create_product_if_unique_for_user(
+                product_name, start_date, end_date, user_id, connection
             )
             
-            if not success:
+            if error:
                 if connection:
                     connection.rollback()
-                return jsonify({'success': False, 'message': f'Insert failed: {error}'}), 500
-            comment_count += 1
+                return jsonify({'success': False, 'message': error}), 400
             
-        # ตรวจสอบว่ามีการเพิ่มความคิดเห็นหรือไม่
-        if comment_count == 0:
+            comment_count = 0
+            
+            for _, row in df.iterrows():
+                comment_category_id = get_comment_category_id(row['commentCategoryName'])
+                sentiment_id = get_sentiment_id(row['sentimentType'])
+                
+                success, error = Comment.insert_comment(
+                    product_id=product_id,
+                    user_id=user_id,
+                    comment_category_id=comment_category_id,
+                    ratings=row['ratings'],
+                    text=row['text'],
+                    sentiment_id=sentiment_id,
+                    connection=connection
+                )
+                
+                if not success:
+                    if connection:
+                        connection.rollback()
+                    return jsonify({'success': False, 'message': f'Insert failed: {error}'}), 500
+                comment_count += 1
+                
+            if comment_count == 0:
+                if connection:
+                    connection.rollback()
+                return jsonify({
+                    'success': False, 
+                    'message': 'No comments/reviews found for the specified time period'
+                }), 404
+            
+            if connection:
+                connection.commit()
+                
+            return jsonify({
+                'success': True,
+                'message': 'Product and comments created successfully',
+                'data': {
+                    'productId': product_id,
+                    'commentCount': comment_count
+                }
+            }), 201
+            
+        except Exception as e:
+            # ข้อผิดพลาดที่เกิดจากการทำงานกับฐานข้อมูล
             if connection:
                 connection.rollback()
-            return jsonify({
-                'success': False, 
-                'message': 'No comments/reviews found for the specified time period'
-            }), 404
-        
-        # ถ้าทุกอย่างสำเร็จ ให้ commit การเปลี่ยนแปลงทั้งหมด
-        if connection:
-            connection.commit()
+            return jsonify({'success': False, 'message': f'Database error: {str(e)}'}), 500
+        finally:
+            if connection:
+                connection.autocommit = True
             
-        return jsonify({
-            'success': True,
-            'message': 'Product and comments created successfully',
-            'data': {
-                'productId': product_id,
-                'commentCount': comment_count
-            }
-        }), 201
-        
     except Exception as e:
-        # กรณีเกิดข้อผิดพลาด ให้ rollback ทั้งหมด
-        if connection:
-            connection.rollback()
-        logging.error(f"Error in create_product_and_analyze: {str(e)}")
         return jsonify({'success': False, 'message': f'Server error: {str(e)}'}), 500
-    finally:
-        # คืนค่า autocommit กลับเป็นค่าเดิม
-        if connection:
-            connection.autocommit = True
 
 # ฟังก์ชันเพื่อแปลงชื่อ commentCategoryName เป็น commentCategoryId
 def get_comment_category_id(comment_category_name):

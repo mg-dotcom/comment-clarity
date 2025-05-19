@@ -2,9 +2,10 @@
 mysql_config = {
     'HOST': 'localhost',  
     'PORT': 3306,         
-    'USER': 'root',
-    'PASSWORD': 'momor123', # Change this to your MySQL password
-    'DATABASE': 'comment_clarity_schema'
+    'USER': 'root', # เเก้: รหัสผ่านฐานข้อมูล
+    'PASSWORD': 'momor123', # เเก้: รหัสผ่านฐานข้อมูล
+    'DATABASE': 'comment_clarity_schema',
+    'CHARSET': 'utf8mb4'
 }
 
 # Flask

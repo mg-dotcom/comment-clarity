@@ -20,6 +20,7 @@ def create_app():
     app.config['MYSQL_PORT'] = mysql_config['PORT']
     app.config['MYSQL_PASSWORD'] = mysql_config['PASSWORD']
     app.config['MYSQL_DB'] = mysql_config['DATABASE']
+    app.config['MYSQL_CHARSET'] = mysql_config['CHARSET']
 
     jwt = JWTManager(app)
     mysql.init_app(app)
@@ -30,6 +31,15 @@ def create_app():
         return jsonify({
             'success': False,
             'message': 'Internal Server Error'}), 500
+
+    @app.before_request
+    def set_utf8mb4_charset():
+        conn = mysql.connection
+        if conn:
+            cursor = conn.cursor()
+            cursor.execute("SET NAMES utf8mb4;")
+            cursor.execute("SET CHARACTER SET utf8mb4;")
+            cursor.close()
 
     app.register_blueprint(api_bp, url_prefix='/api')
 

@@ -260,26 +260,27 @@ export class ProductStoreService {
     productName: string,
     productLink: string,
     startDate: string,
-    endDate: string
+    endDate: string,
+    signal?: AbortSignal
   ): Promise<{ success: boolean; isDuplicate?: boolean; error?: string }> {
     const isDuplicate = this.checkDuplicateProductName(productName);
     if (isDuplicate) {
-      return { 
-        success: false, 
-        isDuplicate: true, 
-        error: 'Product name already exists. Please use a different name.' 
+      return {
+        success: false,
+        isDuplicate: true,
+        error: 'Product name already exists. Please use a different name.',
       };
     }
 
     this._loading.set(true);
-    // ไม่ตั้งค่า global error ที่นี่อีกต่อไป เพื่อไม่ให้กระทบกับหน้า list
 
     try {
       const response = await this.productService.addProduct(
         productName,
         productLink,
         startDate,
-        endDate
+        endDate,
+        signal // ✅ ส่ง signal เข้า service
       );
 
       if (response?.success && response.data?.productId) {
@@ -293,17 +294,21 @@ export class ProductStoreService {
         this._products.set([...this._products(), newProduct]);
         return { success: true };
       } else {
-        return { 
-          success: false, 
-          error: response.message || 'Failed to add product' 
+        return {
+          success: false,
+          error: response.message || 'Failed to add product',
         };
       }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      if ((err as any)?.name === 'AbortError') {
+        console.warn('Request cancelled');
+        return { success: false }; // เงียบ ๆ ไม่แสดง error
+      }
 
-      return { 
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      return {
         success: false,
-        error: errorMessage
+        error: errorMessage,
       };
     } finally {
       this._loading.set(false);

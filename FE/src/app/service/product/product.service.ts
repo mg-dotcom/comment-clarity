@@ -228,7 +228,8 @@ export class ProductService {
     productName: string,
     productLink: string,
     startDate: string,
-    endDate: string
+    endDate: string,
+    signal?: AbortSignal
   ): Promise<ProductResponseWithComments> {
     const accessToken = await this.authService.getToken();
 
@@ -249,6 +250,7 @@ export class ProductService {
         startDate: startDate,
         endDate: endDate,
       }),
+      signal, // Pass the signal to fetch
     });
 
     if (!response.ok) {

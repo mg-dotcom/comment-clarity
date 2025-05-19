@@ -1,6 +1,6 @@
 <div
   class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 modal-backdrop"
-  (click)="close()"
+  (click)="!isLoading() && close()"
   *ngIf="modalService.productAddModalVisible$ | async"
   [@modalBackdrop]
 >
@@ -14,6 +14,7 @@
       <button
         class="text-gray-500 hover:text-gray-700 focus:outline-none"
         (click)="close()"
+        [disabled]="false"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -174,6 +175,15 @@
             <ng-template #submitButtonText> Save </ng-template>
           </button>
         </div>
+        <p
+          class=""
+          *ngIf="isLoading()"
+          class="text-gray-500 text-sm mt-5 text-center"
+        >
+          Please do not close or click anything 
+          <br />
+          until the process is finished.
+        </p>
       </form>
     </div>
   </div>

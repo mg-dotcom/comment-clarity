@@ -31,6 +31,7 @@ export class ProductAddComponent implements OnInit {
   isLoading = this.store.loading;
   error = this.store.error;
   formError: string | null = null;
+  abortController: AbortController | null = null;
 
   constructor() {
     this.productForm = new FormGroup({
@@ -52,13 +53,15 @@ export class ProductAddComponent implements OnInit {
 
       this.formError = null;
 
-      try {
+      this.abortController = new AbortController();
 
+      try {
         const result = await this.store.addProduct(
           productName,
           productLink,
           startDate,
-          endDate
+          endDate,
+          this.abortController.signal // ✅ เพิ่ม signal
         );
 
         if (result.success) {
@@ -86,6 +89,11 @@ export class ProductAddComponent implements OnInit {
   }
 
   close() {
+    if (this.abortController) {
+      this.abortController.abort(); // ✅ ยกเลิก request ที่กำลังทำ
+      this.abortController = null;
+    }
+
     this.modalService.hideProductAddModal();
     setTimeout(() => {
       this.productForm.reset();
